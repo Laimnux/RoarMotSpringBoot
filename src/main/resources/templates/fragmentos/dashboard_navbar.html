@@ -1,0 +1,81 @@
+<header th:fragment="navbar" class="bg-[#151921] shadow-md">
+    <nav class="flex flex-col md:flex-row items-center justify-between p-2 sm:p-2 bg-[#151921] gap-2 md:gap-4">
+        <div class="flex items-center space-x-0 rounded-lg transition transform hover:scale-110 ml-2 sm:ml-5">
+            <img th:src="@{/images/assets/Logo-RoarMot-Blanco.png}" alt="Logo RoarMot" class="h-10 sm:h-12">
+            <img th:src="@{/images/assets/tipografia-roardmot-blanco.png}" alt="RoarMot" class="h-6 sm:h-8">
+        </div>
+        
+        <div class="flex flex-wrap justify-center items-center p-2 rounded-lg gap-1 md:gap-2">
+            <button class="flex items-center px-2 py-1 sm:px-3 sm:py-2 hover:bg-gray-700 rounded-lg transition transform hover:scale-110 text-sm sm:text-base">
+                <img th:src="@{/images/assets/barraMenu/iconos-panel-de-control-blanco2.png}" alt="Panel" class="h-4 sm:h-5">
+                <span class="hidden sm:inline ml-1">Panel de control</span>
+            </button>
+            <button class="flex items-center px-2 py-1 sm:px-3 sm:py-2 hover:bg-gray-700 rounded-lg transition transform hover:scale-110 text-sm sm:text-base">
+                <img th:src="@{/images/assets/barraMenu/icono-CDA-blanco.png}" alt="CDA" class="h-4 sm:h-5">
+                <span class="hidden sm:inline ml-1">CDA</span>
+            </button>
+            <button class="flex items-center px-2 py-1 sm:px-3 sm:py-2 hover:bg-gray-700 rounded-lg transition transform hover:scale-110 text-sm sm:text-base">
+                <img th:src="@{/images/assets/barraMenu/iconos-alerta-blanco.png}" alt="Alertas" class="h-4 sm:h-5">
+                <span class="hidden sm:inline ml-1">Alertas</span>
+            </button>
+            <button class="flex items-center px-2 py-1 sm:px-3 sm:py-2 hover:bg-gray-700 rounded-lg transition transform hover:scale-110 text-sm sm:text-base">
+                <img th:src="@{/images/assets/barraMenu/simbolo-tiendaBlanco.png}" alt="Tienda" class="h-4 sm:h-5">
+                <span class="hidden sm:inline ml-1">Tienda</span>
+            </button>
+            <button class="px-3 py-2 hover:bg-red-500 rounded-lg transition transform hover:scale-125 text-sm sm:text-base">
+                <span class="sm:hidden">SOS</span>
+                <span class="hidden sm:inline ">SOS</span>
+            </button>
+        </div>
+
+        <div class="flex items-center gap-2 mr-2 sm:mr-5">
+            <button class="sparkle-button bg-yellow-500 px-3 py-1 sm:px-4 sm:py-2 rounded-lg text-black hover:bg-[#D90D58] transition transform hover:scale-110 whitespace-nowrap relative overflow-hidden text-sm sm:text-base">
+                Comprar accesorio
+            </button>
+            <button class="p-1 sm:p-2 hover:bg-gray-700 rounded-full transition transform hover:scale-125 ml-3">
+                <img th:src="@{/images/assets/barraMenu/icono-universalidad-blanco.png}" alt="Idioma" class="h-4 w-4 sm:h-5 sm:w-5">
+            </button>
+            
+            <div class="relative group">
+                <button class="p-1 sm:p-2 hover:bg-gray-700 rounded-full transition transform hover:scale-125">
+                    <img th:src="@{/images/assets/barraMenu/iconos-configuracion-blanco-2.png}" alt="Configuración" class="h-4 w-4 sm:h-5 sm:w-5">
+                </button>
+
+                <div class="popup-form-window w-11/12 sm:w-96 lg:w-72 xl:w-[400px] left-1/2 -translate-x-1/2 md:left-auto md:right-0 mt-2">
+                    <div class="flex items-center p-3 sm:p-4 border-b border-[#5C7589]">
+                        <label for="profileUpload" class="relative w-14 h-14 sm:w-16 sm:h-16 flex-shrink-0 cursor-pointer overflow-hidden rounded-lg border border-gray-600 flex items-center justify-center bg-gray-800">
+                            <img id="profilePreview" src="https://placehold.co/60x60/4A5568/FFFFFF?text=User" alt="Avatar de Usuario" class="w-full h-full object-cover">
+                            <div id="profileUploadArea" class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-white opacity-0 hover:opacity-100 transition-opacity duration-200">
+                                <i class="fas fa-camera text-base sm:text-xl"></i>
+                            </div>
+                            <input type="file" id="profileUpload" accept="image/*" class="hidden" onchange="previewImage(this, 'profilePreview', 'profileUploadArea')">
+                        </label>
+                        <div class="ml-3">
+                            <p class="text-sm sm:text-base text-white font-semibold" th:text="${NOMBRE_USUARIO ?: 'Usuario'}">Usuario</p>
+                            <p class="text-xs sm:text-sm text-gray-400" th:text="${EMAIL_USUARIO ?: 'correo@ejemplo.com'}">correo@ejemplo.com</p>
+                            <span class="text-xs text-gray-500 mt-1 block" th:text="${rol_nombre ?: 'Rol'} + ' habitual'">Rol habitual</span>
+                        </div>
+                    </div>
+                    <div class="p-3 sm:p-4 border-b border-[#5C7589]">
+                        <p class="text-gray-300 text-sm font-semibold mb-2">Más opciones de configuración</p>
+                    </div>
+                    <a th:href="@{/panel/panelInicio}" class="flex items-center px-3 py-2 sm:px-4 sm:py-3 text-gray-300 hover:bg-gray-700 transition rounded-b-lg text-sm sm:text-base">
+                        <i class="fas fa-cog mr-2 sm:mr-3 text-base sm:text-lg"></i>
+                        Panel Proveedor
+                    </a>
+                    <a href="#" class="flex items-center px-3 py-2 sm:px-4 sm:py-3 text-gray-300 hover:bg-gray-700 transition rounded-b-lg text-sm sm:text-base">
+                        <i class="fas fa-cog mr-2 sm:mr-3 text-base sm:text-lg"></i>
+                        Configuración de la cuenta
+                    </a>
+                    <a th:href="@{/cerrarSesion}" class="flex items-center px-3 py-2 sm:px-4 sm:py-3 text-red-500 hover:bg-gray-700 transition rounded-b-lg text-sm sm:text-base">
+                        <i class="fas fa-sign-out-alt mr-2 sm:mr-3 text-base sm:text-lg"></i>
+                        Cerrar Sesión
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<!-- Barra divisoria roja -->
+    <div class="h-[1.2px] w-full bg-gradient-to-r from-transparent via-red-600 to-transparent shadow-lg shadow-red-600/10"></div>

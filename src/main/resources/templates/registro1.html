@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro Paso 1 | MYMOTO</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+    <style>
+        .font-bebas { font-family: 'Bebas Neue', sans-serif; }
+        .bg-cream { background-color: #FBF9F7; }
+        .input-error { border-color: #ef4444 !important; }
+        .error-message { color: #ef4444; font-size: 0.75rem; margin-top: 0.25rem; }
+
+        /* Estilos basados en el nuevo atributo de datos */
+        [data-selected="false"] {
+            background-color: white;
+            color: #4a5568; /* Tailwind's gray-800 */
+        }
+
+        [data-selected="true"] {
+            background-color: #fd8c00;
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-cream min-h-screen flex relative">
+
+<div id="alerta" class="hidden fixed top-6 left-1/2 transform -translate-x-1/2 z-50 px-6 py-4 rounded-lg shadow-lg text-white font-semibold text-center max-w-md w-full">
+    <span id="mensaje-alerta"></span>
+</div>
+
+<div class="w-full lg:w-1/2 flex items-center justify-center p-8">
+    <div class="max-w-md w-full">
+
+        <div class="bg-white p-4 rounded-xl shadow-sm mb-10">
+            <div class="flex items-center justify-center space-x-1">
+                <img src="/imagenes/Logo-RoarMot-Negro.png" alt="Logo MMOTO" class="h-16 w-auto object-contain">
+                <img src="/imagenes/tipografia-roarmot-negro.png" alt="Texto MMOTO" class="h-10 w-auto object-contain">
+            </div>
+        </div>
+
+        <div class="bg-white p-10 rounded-xl shadow-sm">
+            <h1 class="font-bebas text-4xl text-gray-800 text-center mb-2">REGÍSTRATE Y EMPIEZA</h1>
+
+            <form class="mt-8 space-y-6" id="formularioPaso1" action="/enviar-codigo" method="post">
+
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+                <div class="relative mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Selecciona tu perfil</label>
+
+                    <div class="flex border border-gray-300 rounded-lg overflow-hidden shadow-sm bg-gray-100 p-1">
+                        <button
+                            type="button"
+                            id="motero-btn"
+                            class="flex-1 py-3 px-4 text-center transition-all duration-300 font-medium rounded-md
+                                   hover:bg-gray-50 hover:shadow-sm"
+                            data-role="comprador"
+                            data-selected="true"
+                            onclick="selectRole('comprador')"
+                        >
+                            Motero
+                        </button>
+
+                        <div class="w-px bg-gray-300 my-2"></div>
+
+                        <button
+                            type="button"
+                            id="proveedor-btn"
+                            class="flex-1 py-3 px-4 text-center transition-all duration-300 font-medium rounded-md
+                                   hover:bg-gray-50 hover:shadow-sm"
+                            data-role="vendedor"
+                            data-selected="false"
+                            onclick="selectRole('vendedor')"
+                        >
+                            Vendedor
+                        </button>
+                    </div>
+
+                    <input type="hidden" id="rol" name="rol" value="comprador">
+                    <div id="error-rol" class="error-message hidden"></div>
+                </div>
+
+                <div class="relative mb-6">
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        required
+                        class="peer w-full px-3 border rounded-md bg-transparent
+                               border-gray-300
+                               focus:border-[#fd8c00] focus:outline-none
+                               valid:border-green-500
+                               [&:not(:placeholder-shown):not(:focus):invalid]:border-red-500
+                               placeholder-shown:border-gray-300"
+                        placeholder=" "
+                        style="padding-top: 1rem; padding-bottom: 0.85rem;"
+                        oninput="validateEmail(this)"
+                    />
+                    <label
+                        for="email"
+                        class="absolute left-3 bg-white px-1
+                            transition-all duration-200 pointer-events-none
+                            text-gray-500
+                            peer-placeholder-shown:text-base
+                            peer-placeholder-shown:top-[1.1rem]
+                            peer-placeholder-shown:-translate-y-0
+                            peer-focus:top-[-0.5rem] peer-focus:text-xs peer-focus:text-[#fd8c00]
+                            peer-valid:top-[-0.5rem] peer-valid:text-xs peer-valid:text-green-600
+                            [&.peer-invalid]:text-red-500
+                            peer-[.filled]:top-[-0.5rem] peer-[.filled]:text-xs"
+                    >
+                        Correo Electrónico
+                    </label>
+                    <div id="error-email" class="absolute top-full w-full text-xs text-red-500 mt-1 hidden px-3">
+                        Ingresa un email válido (ejemplo@dominio.com).
+                    </div>
+                </div>
+
+                <button type="submit"
+                        class="w-full bg-red-600 hover:bg-[#fd8c00] text-white
+                               py-4 px-6 rounded-md font-bebas text-2xl
+                               transition-all duration-300 transform hover:scale-[1.02]
+                               shadow-lg hover:shadow-xl mt-6">
+                    Continuar
+                </button>
+
+                <div class="relative flex items-center py-2">
+                    <div class="flex-grow border-t border-gray-200"></div>
+                    <span class="flex-shrink mx-4 font-bebas text-gray-400">O</span>
+                    <div class="flex-grow border-t border-gray-200"></div>
+                </div>
+
+                <div id="motero-options" class="mt-6 text-center space-y-4">
+                    <a href="#" class="flex items-center justify-center border border-gray-300 rounded-md py-3 px-4 hover:bg-gray-50 transition">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
+                             alt="Google" class="h-5 w-5 mr-2">
+                        <span class="text-gray-700 font-medium">Iniciar sesión con Google</span>
+                    </a>
+                    <p class="text-gray-600 text-sm">
+                        ¿Ya tienes una cuenta?
+                        <a href="login.html" class="text-[#fd8c00] hover:underline">Inicia sesión</a>
+                    </p>
+                </div>
+
+                <div id="proveedor-options" class="hidden mt-6 text-center">
+                    <p class="text-gray-600 text-sm">
+                        Para tiendas registradas:
+                        <a href="login-tiendas.html" class="text-[#fd8c00] hover:underline">Acceso especial</a>
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="hidden lg:block w-1/2 relative">
+    <div class="absolute inset-0 flex items-center justify-center p-2">
+        <div class="relative w-full h-full rounded-xl overflow-hidden shadow-lg">
+            <img id="dynamic-image" src="/imagenes/Motero.jpg" alt="Moto MMOTO"
+                 class="absolute h-full w-auto max-w-none left-[-15%] transition-all duration-300">
+
+            <img id="proveedor-image" src="/imagenes/proveedor.jpg" alt="Proveedor MMOTO"
+                 class="absolute h-full w-auto max-w-none right-[-40%] opacity-0 transition-all duration-300">
+        </div>
+    </div>
+</div>
+
+<script>
+    function validateEmail(input) {
+        const errorElement = document.getElementById('error-email');
+        const labelElement = document.querySelector(`label[for="${input.id}"]`);
+        const hasValue = input.value.trim() !== '';
+
+        if (!hasValue) {
+            errorElement.classList.add('hidden');
+            input.classList.remove('filled');
+            labelElement.classList.remove('peer-invalid'); // <-- AÑADIDO: Elimina la clase cuando el campo está vacío
+            return;
+        }
+
+        const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value);
+        errorElement.classList.toggle('hidden', isValid);
+        input.classList.toggle('filled', hasValue);
+
+        // <-- AÑADIDO: Controla la clase peer-invalid para el color rojo
+        labelElement.classList.toggle('peer-invalid', !isValid); 
+    }
+</script>
+
+<script>
+    function selectRole(role) {
+        const moteroBtn = document.getElementById('motero-btn');
+        const proveedorBtn = document.getElementById('proveedor-btn');
+        const hiddenInput = document.getElementById('rol');
+        const moteroImage = document.getElementById('dynamic-image');
+        const proveedorImage = document.getElementById('proveedor-image');
+        const moteroOptions = document.getElementById('motero-options');
+        const proveedorOptions = document.getElementById('proveedor-options');
+
+        // Resetea el atributo de selección de ambos botones
+        moteroBtn.setAttribute('data-selected', 'false');
+        proveedorBtn.setAttribute('data-selected', 'false');
+
+        // Actualiza el campo de rol
+        hiddenInput.value = role;
+
+        // Aplica los cambios según el rol
+        if (role === 'comprador') {
+            moteroBtn.setAttribute('data-selected', 'true');
+
+            moteroOptions.classList.remove('hidden');
+            proveedorOptions.classList.add('hidden');
+
+            moteroImage.classList.remove('opacity-0');
+            moteroImage.classList.add('left-[-15%]');
+            proveedorImage.classList.add('opacity-0');
+            proveedorImage.classList.remove('right-[-40%]');
+
+        } else { // role === 'vendedor'
+            proveedorBtn.setAttribute('data-selected', 'true');
+
+            moteroOptions.classList.add('hidden');
+            proveedorOptions.classList.remove('hidden');
+
+            moteroImage.classList.add('opacity-0');
+            moteroImage.classList.remove('left-[-15%]');
+            proveedorImage.classList.remove('opacity-0');
+            proveedorImage.classList.add('right-[-40%]');
+        }
+    }
+
+    // Inicializa el rol "Motero" y las opciones al cargar la página
+    document.addEventListener('DOMContentLoaded', function() {
+        selectRole('comprador');
+    });
+</script>
+
+<script>
+    /*
+    document.getElementById('formularioPaso1').addEventListener('submit', async function(event) {
+        event.preventDefault();
+
+        const rol = document.getElementById('rol').value;
+        const email = document.getElementById('email').value.trim();
+        let isValid = true;
+
+        // Validar rol
+        if (!rol) {
+            document.getElementById('error-rol').textContent = 'Selecciona un rol';
+            document.getElementById('error-rol').classList.remove('hidden');
+            isValid = false;
+        }
+
+        // Validar email
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            document.getElementById('error-email').textContent = 'Ingresa un correo válido';
+            document.getElementById('error-email').classList.remove('hidden');
+            isValid = false;
+        }
+
+        if (isValid) {
+            // Mostrar carga
+            const boton = document.querySelector('#formularioPaso1 button[type="submit"]');
+            const textoOriginal = boton.textContent;
+            boton.innerHTML = `
+                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Enviando código...
+            `;
+            boton.disabled = true;
+
+            try {
+                // Simulación realista (1.5 segundos)
+                await new Promise(resolve => setTimeout(resolve, 1500));
+
+                // Mostrar alerta
+                const alerta = document.getElementById('alerta');
+                const mensaje = document.getElementById('mensaje-alerta');
+                mensaje.textContent = `Código enviado a ${email}`;
+                alerta.className = 'fixed top-6 left-1/2 transform -translate-x-1/2 z-50 px-6 py-4 rounded-lg shadow-lg text-white font-semibold text-center max-w-md w-full bg-green-600';
+                alerta.classList.remove('hidden');
+
+                // Redirigir al paso 2
+                setTimeout(() => {
+                    window.location.href = `registro-paso2.html?email=${encodeURIComponent(email)}&rol=${rol}`;
+                }, 2000);
+
+            } catch (error) {
+                // Manejo de errores
+                const alerta = document.getElementById('alerta');
+                const mensaje = document.getElementById('mensaje-alerta');
+                mensaje.textContent = 'Error al enviar el código. Intenta nuevamente.';
+                alerta.className = 'fixed top-6 left-1/2 transform -translate-x-1/2 z-50 px-6 py-4 rounded-lg shadow-lg text-white font-semibold text-center max-w-md w-full bg-red-600';
+                alerta.classList.remove('hidden');
+                boton.textContent = textoOriginal;
+                boton.disabled = false;
+            }
+        }
+    });
+    */
+</script>
+</body>
+</html>

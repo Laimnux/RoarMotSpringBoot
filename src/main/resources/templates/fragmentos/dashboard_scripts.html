@@ -1,0 +1,144 @@
+<div th:fragment="scripts">
+    <script src="https://kit.fontawesome.com/xxxxxxxxxx.js" crossorigin="anonymous"></script> 
+    
+    <script>
+        // Función genérica para previsualizar imágenes
+        function previewImage(input, previewId, uploadAreaId) {
+            const preview = document.getElementById(previewId);
+            const uploadArea = document.getElementById(uploadAreaId);
+            
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.classList.remove('hidden'); // Asegura que la imagen se muestre
+                    if (uploadArea) { // Oculta el área de carga si existe
+                        uploadArea.classList.add('hidden');
+                    }
+                }
+                
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                // Si no se selecciona ningún archivo, muestra el placeholder y el área de carga
+                preview.src = preview.dataset.defaultSrc || ''; // Usa un defaultSrc si lo tienes
+                preview.classList.add('hidden'); // Oculta la imagen si no hay archivo
+                if (uploadArea) {
+                    uploadArea.classList.remove('hidden'); // Muestra el área de carga
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inicialización de la lógica para inputs de archivos
+            const soatUploadInput = document.getElementById('soatUpload');
+            const tecnomecanicaUploadInput = document.getElementById('tecnomecanicaUpload');
+
+            soatUploadInput.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    console.log('SOAT seleccionado:', this.files[0].name);
+                }
+            });
+
+            tecnomecanicaUploadInput.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    console.log('Tecnomecánica seleccionada:', this.files[0].name);
+                }
+            });
+
+            // Inicializar la imagen de perfil (NOTA: profilePreview no está en el HTML del dashboard, pero mantenemos la lógica)
+            const profilePreview = document.getElementById('profilePreview');
+            const profileUploadArea = document.getElementById('profileUploadArea');
+            if (profilePreview && profilePreview.src && profilePreview.src !== window.location.href && !profilePreview.src.includes('placehold.co')) { 
+                profileUploadArea.classList.add('hidden');
+                profilePreview.classList.remove('hidden');
+            } else {
+                if(profilePreview) profilePreview.classList.add('hidden'); // Añadimos chequeo para evitar error si no existe
+                if(profileUploadArea) profileUploadArea.classList.remove('hidden'); // Añadimos chequeo
+            }
+
+            // Lógica de previsualización para la imagen de la moto
+            const motoUploadInput = document.getElementById('motoUpload');
+            if (motoUploadInput) {
+                // Si ya hay una imagen de moto cargada (ej. desde la DB), previsualizarla
+                if (motoUploadInput.dataset.initialImage) { 
+                    document.getElementById('motoPreview').src = motoUploadInput.dataset.initialImage;
+                    document.getElementById('motoPreview').classList.remove('hidden');
+                    document.getElementById('uploadArea').classList.add('hidden');
+                }
+                motoUploadInput.onchange = function() {
+                    previewImage(this, 'motoPreview', 'uploadArea');
+                };
+            }
+
+            // Lógica del carrusel de tips automático
+            const tipsCarouselContainer = document.getElementById('tips-carousel-container');
+            const tipsInnerWrapper = document.getElementById('tips-inner-wrapper');
+            const tips = document.querySelectorAll('.tip-item-carousel');
+            const totalTips = tips.length;
+            let currentSlide = 0; 
+            let intervalId;
+
+            function getTipsPerPage() {
+                if (window.innerWidth >= 1024) { // Desktop (lg breakpoint)
+                    return 4;
+                } else if (window.innerWidth >= 768) { // Tablet (md breakpoint)
+                    return 2;
+                } else { // Mobile
+                    return 1;
+                }
+            }
+
+            function updateCarousel() {
+                if (!tipsCarouselContainer || !tipsInnerWrapper || totalTips === 0) return;
+
+                const tipsPerPage = getTipsPerPage();
+                const totalPages = Math.ceil(totalTips / tipsPerPage);
+                
+                if (currentSlide >= totalPages) {
+                    currentSlide = 0; 
+                }
+
+                // Ajusta el ancho de tipsInnerWrapper para que contenga todas las 'páginas'
+                tipsInnerWrapper.style.width = `${totalPages * 100}%`; 
+
+                // Ajusta el ancho de cada tip individual para que se ajusten a la cuadrícula actual
+                tips.forEach(tip => {
+                    // Calculamos el ancho de cada item en el wrapper global
+                    // 100% / totalTips * totalPages
+                    tip.style.width = `${100 / (tipsPerPage * totalPages)}%`; 
+                    tip.style.flexShrink = 0; // Evita que se encojan
+                    tip.style.flexGrow = 1; // Asegura que ocupen el espacio
+                });
+                
+                // Mueve el wrapper completo
+                const offset = -currentSlide * 100 / totalPages;
+                tipsInnerWrapper.style.transform = `translateX(${offset}%)`;
+            }
+
+            function startAutoSlide() {
+                if (intervalId) {
+                    clearInterval(intervalId);
+                }
+                if (tips.length > getTipsPerPage()) { // Solo inicia si hay más tips de los que caben
+                    intervalId = setInterval(() => {
+                        const tipsPerPage = getTipsPerPage();
+                        const totalPages = Math.ceil(totalTips / tipsPerPage);
+                        currentSlide = (currentSlide + 1) % totalPages;
+                        updateCarousel();
+                    }, 8000); 
+                }
+            }
+
+            // Inicializa el carrusel y comienza el deslizamiento automático al cargar la página
+            updateCarousel();
+            startAutoSlide();
+
+            // Re-calcula y actualiza el carrusel cuando la ventana cambia de tamaño
+            window.addEventListener('resize', () => {
+                updateCarousel();
+                startAutoSlide();
+            });
+        });
+    </script>
+</div>

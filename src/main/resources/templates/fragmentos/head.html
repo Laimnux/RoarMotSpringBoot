@@ -1,0 +1,40 @@
+<head th:fragment="head">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="${title}"></title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    .font-bebas {
+      font-family: 'Bebas Neue', sans-serif;
+    }
+    /* Animación personalizada para el pulso */
+    @keyframes customPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+    .animate-custom-pulse {
+      animation: customPulse 3s ease-in-out infinite;
+    }
+    #hero {
+      background: linear-gradient(rgba(0, 0, 0, 0.171), rgba(0, 0, 0, 0.747)), 
+      url('/imagenes/fondoPagina.jpg') center/cover no-repeat fixed;
+    }
+    /* Animación gradiente para el título de descargar la app */
+    @keyframes gradient-wave {
+      0% {
+        background-position: 0% 50%;
+      }
+      100% {
+        background-position: 100% 50%;
+      }
+    }
+    .animated-text-gradient {
+      background-size: 200% 100%; /* Asegura que el gradiente sea más grande que el texto */
+      animation: gradient-wave 3s ease infinite alternate; /* Aplica la animación */
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+  </style>
+</head>

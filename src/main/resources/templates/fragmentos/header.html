@@ -1,0 +1,41 @@
+<!-- ==================== -->
+  <!-- MENÚ SUPERIOR (NUEVO) -->
+  <!-- ==================== -->
+  <header th:fragment="header" class="bg-[#101010] text-white sticky top-0 z-50 shadow-xl">
+    <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+
+        <div class="flex items-center">
+            <a href="#top" class="block aspect-square max-w-[70px] sm:max-w-[50px] w-auto object-contain transition-transform duration-300 hover:scale-105">
+                <img src="/imagenes/logoBlanco.png" alt="Logo RoarMot" class="w-full h-auto">
+            </a>
+            <a href="#top" class="hidden md:block transition-transform duration-300 hover:scale-105 ml-1 md:ml-2">
+                <img src="/imagenes/tipografiaLogo.png" alt="Tipografía RoarMot" class="w-auto h-auto md:h-[35px] lg:h-[40px] max-w-[180px] object-contain">
+            </a>
+        </div>
+        
+        <nav class="hidden md:flex flex-grow justify-center space-x-8">
+            <a href="#" class="text-sm md:text-md hover:text-red-400 transition-colors font-medium border-b-2 border-transparent hover:border-orange-400">Tienda</a>
+            <a href="#" class="text-sm md:text-md hover:text-red-400 transition-colors font-medium border-b-2 border-transparent hover:border-orange-400">CDA</a>
+            <a href="#" class="text-sm md:text-md hover:text-red-400 transition-colors font-medium border-b-2 border-transparent hover:border-orange-400">Alertas</a>
+            <a href="#" class="text-sm md:text-md hover:text-red-400 transition-colors font-medium border-b-2 border-transparent hover:border-orange-400">SOS</a>
+        </nav>
+        
+        <div class="flex items-center flex-shrink-0 space-x-4">
+            <a href="/login"
+              class="hidden md:block text-sm hover:text-red-400 transition-all duration-300 font-medium
+                      border-b-2 border-transparent hover:border-orange-400 py-2 px-2">
+                Iniciar sesión
+            </a>
+            <a href="/RegistroPaso1" class="bg-red-600 hover:bg-[#fd8c00] text-white px-4 py-2 rounded-full font-bold tracking-wide transition-all duration-150 transform hover:scale-110 shadow-lg hover:shadow-xl hover:brightness-110">
+                REGÍSTRATE
+            </a>
+        </div>
+
+        <button id="mobile-menu-button" class="md:hidden text-white focus:outline-none">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+            </svg>
+        </button>
+        
+    </div>
+</header>
