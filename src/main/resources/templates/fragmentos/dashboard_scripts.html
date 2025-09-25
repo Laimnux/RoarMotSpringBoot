@@ -29,6 +29,27 @@
             }
         }
 
+        // Vincula la función de previsualización al input de la moto.
+    const motoUploadInput = document.getElementById('motoUpload');
+    if (motoUploadInput) {
+        motoUploadInput.addEventListener('change', function() {
+            previewImage(this, 'motoPreview', 'uploadArea');
+            // Aquí puedes agregar la lógica para enviar el formulario automáticamente si es necesario
+            // document.getElementById('motoForm').submit();
+        });
+
+        // Lógica de inicialización para mostrar una imagen de moto preexistente
+        const motoPreview = document.getElementById('motoPreview');
+        const uploadArea = document.getElementById('uploadArea');
+        if (motoPreview && motoPreview.src && motoPreview.src !== window.location.href && !motoPreview.src.includes('placehold.co')) {
+            uploadArea.classList.add('hidden');
+            motoPreview.classList.remove('hidden');
+        } else {
+            if (motoPreview) motoPreview.classList.add('hidden');
+            if (uploadArea) uploadArea.classList.remove('hidden');
+        }
+    }
+
         document.addEventListener('DOMContentLoaded', function() {
             // Inicialización de la lógica para inputs de archivos
             const soatUploadInput = document.getElementById('soatUpload');
@@ -139,6 +160,28 @@
                 updateCarousel();
                 startAutoSlide();
             });
+
+            // --- Lógica para desvanecer mensajes de éxito y error ---
+            const mensajeExito = document.getElementById('mensaje-exito');
+            const mensajeError = document.getElementById('mensaje-error');
+
+            if (mensajeExito) {
+                setTimeout(() => {
+                    mensajeExito.style.transition = 'opacity 1s ease-out';
+                    mensajeExito.style.opacity = '0';
+                    // Elimina el elemento del DOM después de la transición
+                    setTimeout(() => mensajeExito.remove(), 1000);
+                }, 5000); // 5 segundos
+            }
+
+            if (mensajeError) {
+                setTimeout(() => {
+                    mensajeError.style.transition = 'opacity 1s ease-out';
+                    mensajeError.style.opacity = '0';
+                    // Elimina el elemento del DOM después de la transición
+                    setTimeout(() => mensajeError.remove(), 1000);
+                }, 5000); // 5 segundos
+            }
         });
     </script>
 </div>

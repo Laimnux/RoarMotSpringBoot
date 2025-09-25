@@ -2,6 +2,7 @@ package com.roarmot.roarmot.models;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import jakarta.persistence.Column;
 
 import jakarta.persistence.*;
 
@@ -57,6 +58,14 @@ public class Usuario {
     @Enumerated(EnumType.STRING) // Indica a JPA que guarde el nombre del Enum (ej: "Activo")
     @Column(name = "ESTADO_USUARIO", nullable = false) 
     private EstadoUsuario estadoUsuario = EstadoUsuario.Activo; // Inicialización por defecto en Java
+
+    // Columna para Almacenar la imagen del perfil del usurio
+    @Column(name = "URL_IMAGEN_PERFIL")
+    private String urlImagenPerfil;
+
+    // Columna para Almacenar la imagen de la Moto del usuario
+    @Column(name = "URL_IMAGEN_MOTO")
+    private String urlImagenMoto;
     
 
     // CONTROLADORES 
@@ -174,5 +183,20 @@ public class Usuario {
         this.estadoUsuario = estadoUsuario;
     }
 
+    public String getUrlImagenPerfil() {
+        return urlImagenPerfil;
+    }
+
+    public void setUrlImagenPerfil(String urlImagenPerfil) {
+        this.urlImagenPerfil = urlImagenPerfil;
+    }
+
+    public String getUrlImagenMoto() {
+        return urlImagenMoto;
+    }
+
+    public void setUrlImagenMoto(String urlImagenMoto) {
+        this.urlImagenMoto = urlImagenMoto;
+    }
 
 }

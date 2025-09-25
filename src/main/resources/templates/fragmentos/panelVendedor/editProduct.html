@@ -1,0 +1,207 @@
+<div class="container mx-auto p-4 sm:p-6 md:p-8" th:fragment="editProduct">
+    <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-200 mb-6">Editar o eliminar productos</h1>
+
+    <!-- Mensajes de éxito y error de Spring/Thymeleaf -->
+    <div th:if="${successMessage}" class="bg-green-100 text-green-700 px-4 py-2 sm:px-6 sm:py-3 mb-4 border border-green-400 rounded text-sm sm:text-base" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="bg-red-100 text-red-700 px-4 py-2 sm:px-6 sm:py-3 mb-4 border border-red-400 rounded text-sm sm:text-base" th:text="${errorMessage}"></div>
+    
+    <div class="overflow-x-auto bg-white p-4 sm:p-6 md:p-8 rounded-lg shadow-lg">
+        <div class="min-w-[900px]">
+            <table class="w-full text-left border border-gray-200 rounded-lg overflow-hidden">
+                <thead class="bg-pink-600 text-white">
+                    <tr>
+                        <th class="p-2 sm:p-3 text-sm sm:text-base">Nombre</th>
+                        <th class="p-2 sm:p-3 text-sm sm:text-base">Marca</th>
+                        <th class="p-2 sm:p-3 text-sm sm:text-base">Cantidad</th>
+                        <th class="p-2 sm:p-3 text-sm sm:text-base">Precio</th>
+                        <th class="p-2 sm:p-3 text-sm sm:text-base">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <th:block th:if="${!productos.isEmpty()}">
+                        <tr th:each="producto : ${productos}" class="border-b border-gray-200 hover:bg-gray-100" th:data-product-id="${producto.ID}">
+                            <td class="p-2 sm:p-3">
+                                <input name="nombre" th:value="${producto.NOMBRE}" class="input-editable border border-gray-300 px-2 py-1 sm:px-3 sm:py-2 rounded w-full text-gray-800 bg-gray-100 cursor-not-allowed text-sm sm:text-base" readonly="true">
+                            </td>
+                            <td class="p-2 sm:p-3">
+                                <input name="marca" th:value="${producto.MARCA}" class="input-editable border border-gray-300 px-2 py-1 sm:px-3 sm:py-2 rounded w-full text-gray-800 bg-gray-100 cursor-not-allowed text-sm sm:text-base" readonly="true">
+                            </td>
+                            <td class="p-2 sm:p-3">
+                                <input name="cantidad" type="number" th:value="${producto.CANTIDAD}" class="input-editable border border-gray-300 px-2 py-1 sm:px-3 sm:py-2 rounded w-full text-gray-800 bg-gray-100 cursor-not-allowed text-sm sm:text-base" readonly="true">
+                            </td>
+                            <td class="p-2 sm:p-3">
+                                <input name="precio_venta" type="number" step="0.01" th:value="${producto.PRECIO}" class="input-editable border border-gray-300 px-2 py-1 sm:px-3 sm:py-2 rounded w-full text-gray-800 bg-gray-100 cursor-not-allowed text-sm sm:text-base" readonly="true">
+                            </td>
+                            <td class="p-2 sm:p-3 flex flex-col sm:flex-row gap-2">
+                                <button type="button" class="btn-editar bg-yellow-400 hover:bg-yellow-500 px-3 py-1 sm:px-4 sm:py-2 rounded text-white text-xs sm:text-sm whitespace-nowrap">Editar</button>
+                                <button type="button" class="btn-guardar hidden bg-green-600 hover:bg-green-700 px-3 py-1 sm:px-4 sm:py-2 rounded text-white text-xs sm:text-sm whitespace-nowrap">Guardar</button>
+                                <button type="button" class="btn-cancelar hidden bg-gray-500 hover:bg-gray-600 px-3 py-1 sm:px-4 sm:py-2 rounded text-white text-xs sm:text-sm whitespace-nowrap">Cancelar</button>
+                                
+                                <form th:action="@{/vendedor/eliminarProducto}" method="post" onsubmit="return confirm('¿Estás seguro de eliminar este producto?')">
+                                    <input type="hidden" name="id" th:value="${producto.ID}">
+                                    <button type="submit" name="eliminar" class="bg-red-600 hover:bg-red-700 px-3 py-1 sm:px-4 sm:py-2 rounded text-white text-xs sm:text-sm w-full whitespace-nowrap">Eliminar</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </th:block>
+                    <th:block th:unless="${!productos.isEmpty()}">
+                        <tr>
+                            <td colspan="5" class="p-4 text-center text-gray-500 text-base sm:text-lg">No hay productos para mostrar.</td>
+                        </tr>
+                    </th:block>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="my-6 text-gray-200">
+        <h2 class="text-lg font-semibold text-gray-200 mb-3">Descargar productos agregados a Excel</h2>
+        <a th:href="@{/vendedor/descargarExcel}" 
+            class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md inline-flex items-center transition-colors duration-200">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+            Descargar Excel
+        </a>
+    </div>
+
+    <script>
+        // Lógica para el botón de 'Editar'
+        document.querySelectorAll(".btn-editar").forEach(boton => {
+            boton.addEventListener("click", () => {
+                const fila = boton.closest("tr");
+                if (!fila) {
+                    return;
+                }
+                fila.querySelectorAll(".input-editable").forEach(input => {
+                    input.removeAttribute("readonly");
+                    input.classList.remove("bg-gray-100", "cursor-not-allowed");
+                    input.classList.add("bg-white", "focus:ring-2", "focus:ring-pink-600");
+                });
+                
+                fila.dataset.originalNombre = fila.querySelector("input[name='nombre']").value;
+                fila.dataset.originalMarca = fila.querySelector("input[name='marca']").value;
+                fila.dataset.originalCantidad = fila.querySelector("input[name='cantidad']").value;
+                fila.dataset.originalPrecioVenta = fila.querySelector("input[name='precio_venta']").value;
+
+                const btnGuardar = fila.querySelector(".btn-guardar");
+                const btnCancelar = fila.querySelector(".btn-cancelar");
+                if (btnGuardar) btnGuardar.classList.remove("hidden");
+                if (btnCancelar) btnCancelar.classList.remove("hidden");
+                boton.classList.add("hidden");
+            });
+        });
+
+        // Lógica para el botón de 'Cancelar'
+        document.querySelectorAll(".btn-cancelar").forEach(boton => {
+            boton.addEventListener("click", () => {
+                const fila = boton.closest("tr"); 
+                if (!fila) {
+                    return;
+                }
+                fila.querySelector("input[name='nombre']").value = fila.dataset.originalNombre;
+                fila.querySelector("input[name='marca']").value = fila.dataset.originalMarca;
+                fila.querySelector("input[name='cantidad']").value = fila.dataset.originalCantidad;
+                fila.querySelector("input[name='precio_venta']").value = fila.dataset.originalPrecioVenta;
+
+                fila.querySelectorAll(".input-editable").forEach(input => {
+                    input.setAttribute("readonly", true);
+                    input.classList.add("bg-gray-100", "cursor-not-allowed");
+                    input.classList.remove("bg-white", "focus:ring-2", "focus:ring-pink-600");
+                });
+                const btnGuardar = fila.querySelector(".btn-guardar");
+                const btnCancelar = fila.querySelector(".btn-cancelar");
+                const btnEditar = fila.querySelector(".btn-editar");
+                if (btnGuardar) btnGuardar.classList.add("hidden");
+                if (btnCancelar) btnCancelar.classList.add("hidden");
+                if (btnEditar) btnEditar.classList.remove("hidden");
+            });
+        });
+
+        // Lógica para el botón de 'Guardar' (con AJAX)
+        document.querySelectorAll(".btn-guardar").forEach(boton => {
+            boton.addEventListener("click", async () => {
+                const fila = boton.closest("tr");
+                if (!fila) {
+                    return;
+                }
+                const productId = fila.dataset.productId;
+                const nombre = fila.querySelector("input[name='nombre']").value;
+                const marca = fila.querySelector("input[name='marca']").value;
+                const cantidad = fila.querySelector("input[name='cantidad']").value;
+                const precio_venta = fila.querySelector("input[name='precio_venta']").value;
+                
+                const formData = new FormData();
+                formData.append('id', productId);
+                formData.append('nombre', nombre);
+                formData.append('marca', marca);
+                formData.append('cantidad', cantidad);
+                formData.append('precio_venta', precio_venta);
+
+                // Función para mostrar mensajes flotantes
+                function mostrarMensaje(mensaje, tipo) {
+                    const existingMessage = document.querySelector('.temp-message-container');
+                    if (existingMessage) {
+                        existingMessage.remove();
+                    }
+                    const container = document.createElement('div');
+                    let bgColor, borderColor, textColor;
+                    switch (tipo) {
+                        case 'success':
+                            bgColor = 'bg-green-100';
+                            borderColor = 'border-green-400';
+                            textColor = 'text-green-700';
+                            break;
+                        case 'error':
+                            bgColor = 'bg-red-100';
+                            borderColor = 'border-red-400';
+                            textColor = 'text-red-700';
+                            break;
+                        case 'info': 
+                            bgColor = 'bg-blue-100';
+                            borderColor = 'border-blue-400';
+                            textColor = 'text-blue-700';
+                            break;
+                        default:
+                            bgColor = 'bg-blue-100';
+                            borderColor = 'border-blue-400';
+                            textColor = 'text-blue-700';
+                    }
+                    container.className = `temp-message-container fixed top-4 left-1/2 -translate-x-1/2 p-4 rounded-lg shadow-lg z-[1000] ${bgColor} ${borderColor} ${textColor} border w-11/12 sm:max-w-md`;
+                    container.innerHTML = `<p>${mensaje}</p>`;
+                    document.body.appendChild(container);
+                    setTimeout(() => {
+                        container.remove();
+                    }, 3000);
+                }
+
+                mostrarMensaje("Guardando cambios...", "info");
+
+                try {
+                    const response = await fetch("/vendedor/editarProducto", { // URL del controlador de Spring
+                        method: 'POST',
+                        body: formData
+                    });
+                    const result = await response.json(); 
+
+                    if (response.ok && result.success) {
+                        mostrarMensaje(result.message || "Producto actualizado con éxito.", "success");
+                        fila.querySelectorAll(".input-editable").forEach(input => {
+                            input.setAttribute("readonly", true);
+                            input.classList.add("bg-gray-100", "cursor-not-allowed");
+                            input.classList.remove("bg-white", "focus:ring-2", "focus:ring-pink-600");
+                        });
+                        fila.querySelector(".btn-guardar").classList.add("hidden");
+                        fila.querySelector(".btn-cancelar").classList.add("hidden");
+                        fila.querySelector(".btn-editar").classList.remove("hidden");
+                    } else {
+                        const errorMessage = result.errors ? Object.values(result.errors).join('<br>') : (result.message || "Error al actualizar el producto.");
+                        mostrarMensaje(errorMessage, "error");
+                    }
+                } catch (error) {
+                    mostrarMensaje("Error de conexión al servidor. Intenta de nuevo.", "error");
+                }
+            });
+        });
+    </script>
+</div>

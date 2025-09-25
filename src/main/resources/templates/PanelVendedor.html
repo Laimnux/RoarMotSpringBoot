@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title th:text="${title} ?: 'Panel Vendedor - ROARMOT'">Panel Vendedor - ROARMOT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+     <!-- Enlace a Font Awesome para los iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1yO0C/JtqFjF+pXg4Fk+G9rCgL7A1rD1+tQG+tQG+tQG+tQG+tQG+tQG+tQG+tQG+tQG+tQG+tQG+tQG+tQG+tQG+tQG+tQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-200 flex font-sans min-h-screen text-sm">
+
+    <aside class="w-72 bg-gray-900 text-white p-6 flex flex-col">
+        <div th:replace="~{fragmentos/panelVendedor/sidebarPanel :: sidebar}">
+            </div>
+    </aside>
+
+    <main class="flex-1 p-10 overflow-auto relative">
+        <div class="absolute top-4 right-6 text-sm bg-white px-4 py-2 rounded shadow border border-gray-200 z-10">
+            Bienvenido, <span class="font-semibold text-pink-600" th:text="${nombreUsuario} ?: 'Usuario'">Usuario</span>
+        </div>
+
+        <div th:insert="${contentFragment} :: content"></div>
+    </main>
+
+    <script>
+        // Inicializa los íconos de Lucide
+        lucide.createIcons();
+    </script>
+</body>
+</html>
+

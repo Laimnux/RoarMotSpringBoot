@@ -133,15 +133,15 @@ public class RegistroController {
         int rolId;
         switch (rol.toLowerCase()) {
             case "vendedor":
-                rolId = 2;
+                rolId = 1;
                 break;
             case "comprador":
-                rolId = 1;
+                rolId = 2;
                 break;
             default:
                 // Asignar un rol por defecto para cualquier otro caso
                 System.err.println("Rol desconocido: " + rol);
-                rolId = 1; // Por defecto, es 'comprador'
+                rolId = 2; // Por defecto, es 'comprador'
                 break;
         }
 
