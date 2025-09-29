@@ -66,4 +66,15 @@ public class CustomUserDetailsService implements UserDetailsService {
                 return "default"; // Rol por defecto si el ID no coincide
         }
     }
+     /**
+     * Permite a otros servicios (como VendedorController) obtener el objeto Usuario completo.
+     * Este es el método que se llama desde VendedorController.
+     * @param email Correo electrónico del usuario.
+     * @return Objeto Usuario o null si no se encuentra (para manejarlo en el controlador).
+     */
+    public Usuario findByCorreoUsuario(String email) {
+        // Usamos findByEmail, que es el método existente en tu repositorio
+        // .orElse(null) nos permite devolver null si el usuario no existe.
+        return usuarioRepository.findByEmail(email).orElse(null); 
+    }
 }

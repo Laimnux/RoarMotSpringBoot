@@ -7,6 +7,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -17,21 +18,24 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            // IGNORAR CSRF para las rutas POST de registro.
+            // 1. CSRF: Ignorar para todos los POST que manejan el registro y el producto.
             .csrf(csrf -> csrf
-                .ignoringRequestMatchers("/enviar-codigo", "/validar-codigo", "/guardar-usuario") // AÑADIDO: /guardar-usuario
+                .ignoringRequestMatchers("/enviar-codigo", "/validar-codigo", "/guardar-usuario", "/panel/ProductProcess")
             )
             .authorizeHttpRequests(authorize -> authorize
-                // 1. Recursos Estáticos (GET)
-                .requestMatchers("/css/**", "/js/**", "/imagenes/**", "/favicon.ico").permitAll()
                 
-                // 2. Rutas del Flujo de Registro que son GET (mostrar la página)
+                // 2. Rutas PÚBLICAS (GET)
                 .requestMatchers("/", "/login", "/RegistroPaso1", "/RegistroPaso2", "/RegistroPaso3").permitAll()
                 
-                // 3. RUTAS DE PROCESAMIENTO DEL REGISTRO QUE SON POST
-                .requestMatchers(HttpMethod.POST, "/enviar-codigo", "/validar-codigo", "/guardar-usuario").permitAll() // AÑADIDO: /guardar-usuario
+                // 3. Rutas PÚBLICAS (POST)
+                .requestMatchers(HttpMethod.POST, "/enviar-codigo", "/validar-codigo", "/guardar-usuario").permitAll() 
                 
-                // 4. Cualquier otra solicitud DEBE estar autenticada
+                // 4. [PROTECCIÓN VENDEDOR]
+                // TODAS las rutas bajo /panel (GETs y POSTs) requieren el rol Vendedor.
+                // Esta línea DEBE estar DESCOMENTADA para que funcione la seguridad.
+                .requestMatchers("/panel/**").hasAuthority("ROLE_Vendedor")
+                
+                // 5. Cualquier otra solicitud DEBE estar autenticada
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
@@ -41,18 +45,39 @@ public class SecurityConfig {
                 .failureUrl("/login?error")
                 .permitAll()
             )
+            // *** INICIO: CONFIGURACIÓN DETALLADA DEL LOGOUT ***
             .logout(logout -> logout
+                // URL que dispara el proceso de cierre de sesión (POST recomendado)
+                .logoutUrl("/logout") 
+                // URL a la que se redirige al usuario después de un cierre de sesión exitoso
+                .logoutSuccessUrl("/login?logout") 
+                // Invalida la sesión HTTP actual
+                .invalidateHttpSession(true)
+                // Borra la cookie de sesión si existe
+                .deleteCookies("JSESSIONID")
+                // Permite a todos acceder a la URL de logout
                 .permitAll()
             );
+            // *** FIN: CONFIGURACIÓN DETALLADA DEL LOGOUT ***
                 
         return http.build();
     }
 
-    /*
-     * Este bean es crucial y lo usa Spring Security 
-     * para gestionar el proceso de autenticación. Lo hemos agregado 
-     * para que la configuración sea completa.
-     */
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring().requestMatchers(
+            "/css/**", 
+            "/js/**", 
+            "/imagenes/**", 
+            "/favicon.ico", 
+            "/uploads/**",
+            // ¡Ajuste! La ruta web para mostrar imágenes de productos
+            "/products/**",
+
+            "/favicon.icon"
+        );
+    }
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();

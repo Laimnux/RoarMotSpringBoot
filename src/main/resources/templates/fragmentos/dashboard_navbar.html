@@ -76,10 +76,21 @@
                         <i class="fas fa-cog mr-2 sm:mr-3 text-base sm:text-lg"></i>
                         Configuración de la cuenta
                     </a>
-                    <a th:href="@{/cerrarSesion}" class="flex items-center px-3 py-2 sm:px-4 sm:py-3 text-red-500 hover:bg-gray-700 transition rounded-b-lg text-sm sm:text-base">
-                        <i class="fas fa-sign-out-alt mr-2 sm:mr-3 text-base sm:text-lg"></i>
-                        Cerrar Sesión
-                    </a>
+                    
+                    <form th:action="@{/logout}" method="post" class="w-full">
+                        <!-- El token CSRF es necesario para la petición POST -->
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                        
+                        <!-- El botón de submit toma los estilos del enlace anterior -->
+                        <button type="submit" 
+                            class="flex items-center w-full text-left px-3 py-2 sm:px-4 sm:py-3 text-red-500 hover:bg-gray-700 transition rounded-b-lg text-sm sm:text-base">
+                            
+                            <!-- Tu ícono original (asumiendo que estás usando Font Awesome para 'fas fa-sign-out-alt') -->
+                            <i class="fas fa-sign-out-alt mr-2 sm:mr-3 text-base sm:text-lg"></i>
+                            Cerrar Sesión
+                        </button>
+                    </form>
+
                 </div>
             </div>
         </div>
