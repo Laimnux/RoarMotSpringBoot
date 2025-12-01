@@ -1,4 +1,4 @@
-package com.roarmot.roarmot.config;
+package com.roarmot.roarmot.models;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;

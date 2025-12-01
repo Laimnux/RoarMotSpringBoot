@@ -1,5 +1,5 @@
-<header th:fragment="navbar" class="bg-[#151921] shadow-md">
-    <nav class="flex flex-col md:flex-row items-center justify-between p-2 sm:p-2 bg-[#151921] gap-2 md:gap-4">
+<header th:fragment="navbar" class="bg-[#0D1118] shadow-md">
+    <nav class="flex flex-col md:flex-row items-center justify-between p-2 sm:p-2 bg-[#0D1118] gap-2 md:gap-4">
         <div class="flex items-center space-x-0 rounded-lg transition transform hover:scale-110 ml-2 sm:ml-5">
             <img th:src="@{/imagenes/LogoBlanco.png}" alt="Logo RoarMot" class="h-10 sm:h-12">
             <img th:src="@{/imagenes/tipografiaLogo.png}" alt="RoarMot" class="h-6 sm:h-8">
@@ -18,10 +18,10 @@
                 <img th:src="@{imagenes/navbarImg/alerta.png}" alt="Alertas" class="h-4 sm:h-5">
                 <span class="hidden sm:inline ml-1">Alertas</span>
             </button>
-            <button class="flex items-center px-2 py-1 sm:px-3 sm:py-2 hover:bg-gray-700 rounded-lg transition transform hover:scale-110 text-sm sm:text-base">
+            <a th:href="@{/store}" class="flex items-center px-2 py-1 sm:px-3 sm:py-2 hover:bg-gray-700 rounded-lg transition transform hover:scale-110 text-sm sm:text-base">
                 <img th:src="@{imagenes/navbarImg/tiendaBlanco.png}" alt="Tienda" class="h-4 sm:h-5">
                 <span class="hidden sm:inline ml-1">Tienda</span>
-            </button>
+            </a>
             <button class="px-3 py-2 hover:bg-red-500 rounded-lg transition transform hover:scale-125 text-sm sm:text-base">
                 <span class="sm:hidden">SOS</span>
                 <span class="hidden sm:inline ">SOS</span>
@@ -29,9 +29,9 @@
         </div>
 
         <div class="flex items-center gap-2 mr-2 sm:mr-5">
-            <button class="sparkle-button bg-yellow-500 px-3 py-1 sm:px-4 sm:py-2 rounded-lg text-black hover:bg-[#D90D58] transition transform hover:scale-110 whitespace-nowrap relative overflow-hidden text-sm sm:text-base">
+            <a th:href="@{/store}" class="sparkle-button bg-yellow-500 px-3 py-1 sm:px-4 sm:py-2 rounded-lg text-black hover:bg-[#D90D58] transition transform hover:scale-110 whitespace-nowrap relative overflow-hidden text-sm sm:text-base">
                 Comprar accesorio
-            </button>
+            </a>
             <button class="p-1 sm:p-2 hover:bg-gray-700 rounded-full transition transform hover:scale-125 ml-3">
                 <img th:src="@{imagenes/navbarImg/universalidad.png}" alt="Idioma" class="h-4 w-4 sm:h-5 sm:w-5">
             </button>

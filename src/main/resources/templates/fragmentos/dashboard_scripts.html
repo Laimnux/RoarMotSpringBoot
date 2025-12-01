@@ -2,7 +2,7 @@
     <script src="https://kit.fontawesome.com/xxxxxxxxxx.js" crossorigin="anonymous"></script> 
     
     <script>
-        // Función genérica para previsualizar imágenes
+        // Función genérica para previsualizar imágenes (MANTENER)
         function previewImage(input, previewId, uploadAreaId) {
             const preview = document.getElementById(previewId);
             const uploadArea = document.getElementById(uploadAreaId);
@@ -12,156 +12,47 @@
                 
                 reader.onload = function(e) {
                     preview.src = e.target.result;
-                    preview.classList.remove('hidden'); // Asegura que la imagen se muestre
-                    if (uploadArea) { // Oculta el área de carga si existe
+                    preview.classList.remove('hidden');
+                    if (uploadArea) {
                         uploadArea.classList.add('hidden');
                     }
                 }
                 
                 reader.readAsDataURL(input.files[0]);
             } else {
-                // Si no se selecciona ningún archivo, muestra el placeholder y el área de carga
-                preview.src = preview.dataset.defaultSrc || ''; // Usa un defaultSrc si lo tienes
-                preview.classList.add('hidden'); // Oculta la imagen si no hay archivo
+                preview.src = preview.dataset.defaultSrc || '';
+                preview.classList.add('hidden');
                 if (uploadArea) {
-                    uploadArea.classList.remove('hidden'); // Muestra el área de carga
+                    uploadArea.classList.remove('hidden');
                 }
             }
         }
 
-        // Vincula la función de previsualización al input de la moto.
-    const motoUploadInput = document.getElementById('motoUpload');
-    if (motoUploadInput) {
-        motoUploadInput.addEventListener('change', function() {
-            previewImage(this, 'motoPreview', 'uploadArea');
-            // Aquí puedes agregar la lógica para enviar el formulario automáticamente si es necesario
-            // document.getElementById('motoForm').submit();
-        });
-
-        // Lógica de inicialización para mostrar una imagen de moto preexistente
-        const motoPreview = document.getElementById('motoPreview');
-        const uploadArea = document.getElementById('uploadArea');
-        if (motoPreview && motoPreview.src && motoPreview.src !== window.location.href && !motoPreview.src.includes('placehold.co')) {
-            uploadArea.classList.add('hidden');
-            motoPreview.classList.remove('hidden');
-        } else {
-            if (motoPreview) motoPreview.classList.add('hidden');
-            if (uploadArea) uploadArea.classList.remove('hidden');
-        }
-    }
-
         document.addEventListener('DOMContentLoaded', function() {
-            // Inicialización de la lógica para inputs de archivos
+            // ===== MANTENER ESTOS (si todavía los usas) =====
+            
+            // Inputs de archivos SOAT y Tecnomecánica
             const soatUploadInput = document.getElementById('soatUpload');
             const tecnomecanicaUploadInput = document.getElementById('tecnomecanicaUpload');
 
-            soatUploadInput.addEventListener('change', function() {
-                if (this.files && this.files[0]) {
-                    console.log('SOAT seleccionado:', this.files[0].name);
-                }
-            });
-
-            tecnomecanicaUploadInput.addEventListener('change', function() {
-                if (this.files && this.files[0]) {
-                    console.log('Tecnomecánica seleccionada:', this.files[0].name);
-                }
-            });
-
-            // Inicializar la imagen de perfil (NOTA: profilePreview no está en el HTML del dashboard, pero mantenemos la lógica)
-            const profilePreview = document.getElementById('profilePreview');
-            const profileUploadArea = document.getElementById('profileUploadArea');
-            if (profilePreview && profilePreview.src && profilePreview.src !== window.location.href && !profilePreview.src.includes('placehold.co')) { 
-                profileUploadArea.classList.add('hidden');
-                profilePreview.classList.remove('hidden');
-            } else {
-                if(profilePreview) profilePreview.classList.add('hidden'); // Añadimos chequeo para evitar error si no existe
-                if(profileUploadArea) profileUploadArea.classList.remove('hidden'); // Añadimos chequeo
-            }
-
-            // Lógica de previsualización para la imagen de la moto
-            const motoUploadInput = document.getElementById('motoUpload');
-            if (motoUploadInput) {
-                // Si ya hay una imagen de moto cargada (ej. desde la DB), previsualizarla
-                if (motoUploadInput.dataset.initialImage) { 
-                    document.getElementById('motoPreview').src = motoUploadInput.dataset.initialImage;
-                    document.getElementById('motoPreview').classList.remove('hidden');
-                    document.getElementById('uploadArea').classList.add('hidden');
-                }
-                motoUploadInput.onchange = function() {
-                    previewImage(this, 'motoPreview', 'uploadArea');
-                };
-            }
-
-            // Lógica del carrusel de tips automático
-            const tipsCarouselContainer = document.getElementById('tips-carousel-container');
-            const tipsInnerWrapper = document.getElementById('tips-inner-wrapper');
-            const tips = document.querySelectorAll('.tip-item-carousel');
-            const totalTips = tips.length;
-            let currentSlide = 0; 
-            let intervalId;
-
-            function getTipsPerPage() {
-                if (window.innerWidth >= 1024) { // Desktop (lg breakpoint)
-                    return 4;
-                } else if (window.innerWidth >= 768) { // Tablet (md breakpoint)
-                    return 2;
-                } else { // Mobile
-                    return 1;
-                }
-            }
-
-            function updateCarousel() {
-                if (!tipsCarouselContainer || !tipsInnerWrapper || totalTips === 0) return;
-
-                const tipsPerPage = getTipsPerPage();
-                const totalPages = Math.ceil(totalTips / tipsPerPage);
-                
-                if (currentSlide >= totalPages) {
-                    currentSlide = 0; 
-                }
-
-                // Ajusta el ancho de tipsInnerWrapper para que contenga todas las 'páginas'
-                tipsInnerWrapper.style.width = `${totalPages * 100}%`; 
-
-                // Ajusta el ancho de cada tip individual para que se ajusten a la cuadrícula actual
-                tips.forEach(tip => {
-                    // Calculamos el ancho de cada item en el wrapper global
-                    // 100% / totalTips * totalPages
-                    tip.style.width = `${100 / (tipsPerPage * totalPages)}%`; 
-                    tip.style.flexShrink = 0; // Evita que se encojan
-                    tip.style.flexGrow = 1; // Asegura que ocupen el espacio
+            if (soatUploadInput) {
+                soatUploadInput.addEventListener('change', function() {
+                    if (this.files && this.files[0]) {
+                        console.log('SOAT seleccionado:', this.files[0].name);
+                    }
                 });
-                
-                // Mueve el wrapper completo
-                const offset = -currentSlide * 100 / totalPages;
-                tipsInnerWrapper.style.transform = `translateX(${offset}%)`;
             }
 
-            function startAutoSlide() {
-                if (intervalId) {
-                    clearInterval(intervalId);
-                }
-                if (tips.length > getTipsPerPage()) { // Solo inicia si hay más tips de los que caben
-                    intervalId = setInterval(() => {
-                        const tipsPerPage = getTipsPerPage();
-                        const totalPages = Math.ceil(totalTips / tipsPerPage);
-                        currentSlide = (currentSlide + 1) % totalPages;
-                        updateCarousel();
-                    }, 8000); 
-                }
+            if (tecnomecanicaUploadInput) {
+                tecnomecanicaUploadInput.addEventListener('change', function() {
+                    if (this.files && this.files[0]) {
+                        console.log('Tecnomecánica seleccionada:', this.files[0].name);
+                    }
+                });
             }
 
-            // Inicializa el carrusel y comienza el deslizamiento automático al cargar la página
-            updateCarousel();
-            startAutoSlide();
-
-            // Re-calcula y actualiza el carrusel cuando la ventana cambia de tamaño
-            window.addEventListener('resize', () => {
-                updateCarousel();
-                startAutoSlide();
-            });
-
-            // --- Lógica para desvanecer mensajes de éxito y error ---
+            // ===== MANTENER ESTOS =====
+            // Mensajes de éxito/error
             const mensajeExito = document.getElementById('mensaje-exito');
             const mensajeError = document.getElementById('mensaje-error');
 
@@ -169,19 +60,146 @@
                 setTimeout(() => {
                     mensajeExito.style.transition = 'opacity 1s ease-out';
                     mensajeExito.style.opacity = '0';
-                    // Elimina el elemento del DOM después de la transición
                     setTimeout(() => mensajeExito.remove(), 1000);
-                }, 5000); // 5 segundos
+                }, 5000);
             }
 
             if (mensajeError) {
                 setTimeout(() => {
                     mensajeError.style.transition = 'opacity 1s ease-out';
                     mensajeError.style.opacity = '0';
-                    // Elimina el elemento del DOM después de la transición
                     setTimeout(() => mensajeError.remove(), 1000);
-                }, 5000); // 5 segundos
+                }, 5000);
             }
+
+            // ===== NUEVO JAVASCRIPT PARA DISEÑO ANGULAR =====
+
+            // 1. Manejo de la imagen foto moto usuario (nuevo diseño)
+            document.getElementById('upload-moto-image')?.addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const displayArea = document.getElementById('moto-image-display');
+                        if (displayArea) {
+                            displayArea.innerHTML = `<img src="${e.target.result}" alt="Foto de la moto del usuario" class="w-full h-full object-cover" />`;
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // 2. Carrusel de tips (nuevo diseño angular)
+            const wrapper = document.getElementById('tips-inner-wrapper');
+            if (wrapper) {
+                const indicators = document.querySelectorAll('.carousel-indicator');
+                const totalSlides = wrapper.children.length;
+                let currentIndex = 0;
+                let autoScroll;
+                const autoScrollDelay = 7000;
+
+                function updateCarousel() {
+                    wrapper.style.transform = `translateX(-${currentIndex * 100}%)`;
+                    
+                    indicators.forEach((indicator, index) => {
+                        if (index === currentIndex) {
+                            indicator.classList.remove('bg-gray-500');
+                            indicator.classList.add('active');
+                        } else {
+                            indicator.classList.remove('active');
+                            indicator.classList.add('bg-gray-500');
+                        }
+                    });
+                }
+
+                function startAutoScroll() {
+                    autoScroll = setInterval(() => {
+                        currentIndex = (currentIndex + 1) % totalSlides;
+                        updateCarousel();
+                    }, autoScrollDelay);
+                }
+
+                if (totalSlides > 0) {
+                    updateCarousel();
+                    startAutoScroll();
+
+                    indicators.forEach(indicator => {
+                        indicator.addEventListener('click', function() {
+                            currentIndex = parseInt(this.getAttribute('data-index'));
+                            updateCarousel();
+                            clearInterval(autoScroll);
+                            startAutoScroll();
+                        });
+                    });
+                }
+            }
+
+            // 3. Envío del formulario al backend Spring Boot CON CSRF
+            document.getElementById('motoForm')?.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                // Obtener el token CSRF
+                const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+                const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+                
+                // Obtener los datos del formulario
+                const formData = {
+                    marcaMoto: document.getElementById('marca').value,
+                    modeloMoto: document.getElementById('modelo').value,
+                    colorMoto: document.getElementById('color').value,
+                    placaMoto: document.getElementById('placa').value,
+                    kilometraje: parseInt(document.getElementById('kilometraje').value),
+                    soatMoto: document.getElementById('soat').value,
+                    tecnomecanica: document.getElementById('tecnomecanica').value,
+                    imagenMoto: '/imagenes/moto-default.jpg' // Imagen por defecto
+                };
+
+                // Validaciones básicas
+                if (!formData.placaMoto || !formData.marcaMoto || !formData.modeloMoto) {
+                    alert('Por favor completa los campos obligatorios: Placa, Marca y Modelo');
+                    return;
+                }
+
+                try {
+                    console.log('Enviando datos:', formData);
+                    
+                    // Enviar al backend Spring Boot CON CSRF token
+                    const response = await fetch('/api/motos', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            [csrfHeader]: csrfToken  // ← AGREGAR CSRF TOKEN A LOS HEADERS
+                        },
+                        body: JSON.stringify(formData)
+                    });
+
+                    if (response.ok) {
+                        const resultado = await response.json();
+                        alert('¡Moto registrada exitosamente!');
+                        // Limpiar formulario
+                        this.reset();
+                        
+                        // Restaurar la imagen por defecto
+                        const imageDisplay = document.getElementById('moto-image-display');
+                        if (imageDisplay) {
+                            imageDisplay.innerHTML = `
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 mb-2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.58-1.58L10.5 11.25H21a2.25 2.25 0 00-2.25-2.25H15a2.25 2.25 0 00-2.25 2.25v2.25m-1.5-3.52l2.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6.75A2.25 2.25 0 016 4.5h2.25" />
+                                </svg>
+                                <p class="text-sm font-bold">Subir foto de tu moto</p>
+                                <p class="text-xs text-gray-400">Clic para seleccionar o arrastrar y soltar</p>
+                            `;
+                        }
+                        
+                    } else {
+                        const error = await response.text();
+                        alert('Error: ' + error);
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Error al conectar con el servidor');
+                }
+            });
         });
     </script>
 </div>

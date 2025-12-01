@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Promoción Especial RoarMot</title>
+    <style>
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #1B2838;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .header {
+            background-color: #0D1118;
+            padding: 30px 20px;
+            text-align: center;
+            border-bottom: 2px solid #66C0F4;
+        }
+        
+        .logo {
+            max-width: 200px;
+            height: auto;
+        }
+        
+        .title {
+            color: #66C0F4;
+            font-size: 28px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .subtitle {
+            color: #C7D5E0;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        
+        .discount-badge {
+            background-color: #FF4500;
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+            padding: 15px 30px;
+            border-radius: 25px;
+            display: inline-block;
+            margin: 15px 0;
+        }
+        
+        .product-section {
+            padding: 30px 20px;
+            text-align: center;
+            background-color: #0D1118
+        }
+        
+        .product-name {
+            color: #66C0F4;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .price-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .original-price {
+            color: #8F98A0;
+            text-decoration: line-through;
+            font-size: 18px;
+        }
+        
+        .discount-price {
+            color: #ACDbf5;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .features {
+            background-color: #1B2838;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            text-align: left;
+        }
+        
+        .feature-item {
+            color: #C7D5E0;
+            margin: 8px 0;
+            padding-left: 20px;
+        }
+        
+        .expiration {
+            background-color: #1B2838;
+            padding: 15px;
+            text-align: center;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .expiration-text {
+            color: #FF6B35;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background-color: #66C0F4;
+            color: white;
+            padding: 15px 40px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 18px;
+            margin: 20px 0;
+        }
+        
+        .footer {
+            background-color: #1B2838;
+            padding: 20px;
+            text-align: center;
+            border-top: 1px solid #2A475E;
+            color: #8F98A0;
+            font-size: 12px;
+        }
+        .logo-text {
+            font-size: 30px;
+            font-weight: 600; /* Más grueso */
+            color: #ffffff;
+            
+            text-transform: uppercase;
+            letter-spacing: 3px; /* Espaciado entre letras */
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5); /* Sombra para efecto 3D */
+            font-family: 'Arial Black', 'Arial Bold', sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER CON LOGO -->
+        <div class="header">
+            <!-- Reemplaza con tu logo -->
+            <div class="logo-text">ROARMOT</div>
+            <div class="title">¡OFERTA EXCLUSIVA!</div>
+            <div class="subtitle">
+                <span th:text="${nombreUsuario}">Cliente</span>, tenemos una promoción especial para ti
+            </div>
+            
+            <!-- BADGE DE DESCUENTO -->
+            <div class="discount-badge" th:text="${descuento + '% DE DESCUENTO'}">30% DE DESCUENTO</div>
+        </div>
+        
+        <!-- SECCIÓN DEL PRODUCTO -->
+        <div class="product-section">
+            <div class="product-name" th:text="${producto}">Casco Integral Premium</div>
+            
+            <!-- PRECIOS -->
+            <div class="price-section">
+                <span class="original-price">Precio Original</span>
+                <span class="discount-price" th:text="${descuento + '% OFF'}">30% OFF</span>
+            </div>
+            
+            <!-- CARACTERÍSTICAS -->
+            <div class="features">
+                <div class="feature-item">✓ Material de alta resistencia</div>
+                <div class="feature-item">✓ Diseño ergonómico y cómodo</div>
+                <div class="feature-item">✓ Certificaciones de seguridad</div>
+                <div class="feature-item">✓ Garantía incluida</div>
+            </div>
+            
+            <!-- FECHA DE EXPIRACIÓN -->
+            <div class="expiration">
+                <div class="expiration-text">
+                    ⏳ Oferta válida hasta: <span th:text="${fechaExpiracion}">30 de Diciembre 2025</span>
+                </div>
+            </div>
+            
+            <!-- BOTÓN DE ACCIÓN -->
+            <a href="https://roarmot.com/productos" class="cta-button">
+                VER PRODUCTOS EN OFERTA
+            </a>
+        </div>
+        
+        <!-- FOOTER -->
+        <div class="footer">
+            <p>RoarMot - Tu tienda de confianza para accesorios de motocicleta</p>
+            <p>¿No deseas recibir más promociones? <a href="https://roarmot.com/unsuscribe" style="color: #66C0F4;">Cancelar suscripción</a></p>
+        </div>
+    </div>
+</body>
+</html>

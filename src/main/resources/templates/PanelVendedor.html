@@ -61,7 +61,7 @@
         <!-- INSERCIÓN DINÁMICA DEL CONTENIDO -->
         <!-- El controlador define ${contentFragment} (ej: fragmentos/panelVendedor/editProduct) -->
         <!-- Y se inserta el fragmento 'content' de ese archivo. -->
-        <div th:insert="${contentFragment} :: content">
+        <div th:insert="~{${contentFragment} :: content}">
             <!-- Contenido de fallback si contentFragment es nulo o el archivo no existe -->
             <h1 class="text-xl font-bold text-gray-700">Contenido Principal del Panel</h1>
             <p class="text-gray-500">Seleccione una opción del menú lateral.</p>
@@ -71,6 +71,41 @@
     <script>
         // Inicializa los íconos de Lucide
         lucide.createIcons();
+    </script>
+
+    <script>
+        // para la tarjeta Reporte Estadísticos
+        function descargarReporte(tipo) {
+        console.log('🟦 Botón clickeado, tipo:', tipo);
+        
+        let url = '';
+        
+        switch(tipo) {
+            case 'marca':
+                url = '/api/reportes/productos-por-marca';
+                break;
+            case 'talla':
+                url = '/api/reportes/productos-por-talla';
+                break;
+            case 'subcategoria':
+                url = '/api/reportes/productos-por-subcategoria';
+                break;
+            default:
+                console.error('❌ Tipo desconocido:', tipo);
+                return;
+        }
+        
+        console.log('🔗 URL generada:', url);
+        
+        // Verificar que la URL es válida
+        if (url && url.startsWith('/api/reportes/')) {
+            console.log('📥 Abriendo URL en nueva pestaña...');
+            window.open(url, '_blank');
+        } else {
+            console.error('❌ URL inválida:', url);
+            alert('Error: No se pudo generar la URL para el reporte');
+        }
+    }
     </script>
     
 </body>

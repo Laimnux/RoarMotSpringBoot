@@ -2,241 +2,199 @@
     
     <div class="w-full lg:max-w-[1300px] mx-auto">
         
-        <div class="flex flex-col lg:flex-row lg:gap-6 main-content-wrapper lg:items-start w-full">
-            <div class="bg-transparent border border-[#5C7589] rounded-lg shadow p-4 sm:p-6 w-full md:w-[900px] h-auto flex flex-col justify-start lg:flex-shrink-0 lg:w-[900px]">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 h-full">
-                    <div class="flex flex-col border border-gray-700 rounded-lg p-3 sm:p-4">
-                        <h2 class="section-title text-base sm:text-lg text-white-300 font-light mb-4 flex items-center justify-between relative">
-                            <div class="flex items-center gap-2">
-                                <img th:src="@{imagenes/body/motoBlanca.png}" alt="Icono Moto" class="w-5 h-5 sm:w-6 sm:h-6 object-contain">
-                                <span>Datos básicos</span>
-                            </div>
-                            <div class="relative group">
-                                <i class="fas fa-circle-question text-gray-400 hover:text-yellow-500 cursor-help text-sm sm:text-base"></i>
-                                <div class="absolute hidden group-hover:block bg-[#1A242C] text-white text-xs rounded-lg p-2 w-48 z-50 -right-2 bottom-full left-1/2 mt-2 shadow-lg border border-gray-700 -translate-x-1/2">
-                                    Los datos básicos de tu moto son clave para un diagnóstico preciso. Nos permiten identificar posibles fallos y ofrecerte una asistencia más efectiva, garantizando tu seguridad en cada viaje.
-                                </div>
-                            </div>
-                        </h2>
-                        <div class="space-y-4 flex-grow">
-                            <div>
-                                <label class="block text-xs sm:text-sm text-gray-400 mb-1">Placa</label>
-                                <input type="text" class="form-input text-sm sm:text-base bg-transparent border-b border-gray-400 hover:border-red-500 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500" placeholder="ABC-123">
-                            </div>
-                            <div>
-                                <label class="block text-xs sm:text-sm text-gray-400 mb-1">Número de serie</label>
-                                <input type="text" class="form-input text-sm sm:text-base bg-transparent border-b border-gray-400 hover:border-red-500 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500" placeholder="XYZ123456789">
-                            </div>
-                            <div>
-                                <label class="block text-xs sm:text-sm text-gray-400 mb-1">Número de motor</label>
-                                <input type="text" class="form-input text-sm sm:text-base bg-transparent border-b border-gray-400 hover:border-red-500 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500" placeholder="MTR987654321">
-                            </div>
-                            <div>
-                                <label class="block text-xs sm:text-sm text-gray-400 mb-1">Marca / Modelo</label>
-                                <input type="text" class="form-input text-sm sm:text-base bg-transparent border-b border-gray-400 hover:border-red-500 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500" placeholder="Yamaha YZF-R3">
-                            </div>
-                            <div>
-                                <label class="block text-xs sm:text-sm text-gray-400 mb-1">Color</label>
-                                <input type="text" class="form-input text-sm sm:text-base bg-transparent border-b border-gray-400 hover:border-red-500 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500" placeholder="Rojo">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="flex flex-col border border-gray-700 rounded-lg p-3 sm:p-4">
-                        <h2 class="section-title text-sm sm:text-base text-white-300 font-light mb-4 flex items-center justify-between relative">
-                            <div class="flex items-center gap-2">
-                                <i class="fas fa-gear text-lg sm:text-xl"></i>
-                                <span>Datos técnicos / Mecánicos</span>
-                            </div>
-                            <div class="relative group">
-                                <i class="fas fa-circle-question text-gray-400 hover:text-yellow-500 cursor-help text-sm sm:text-base"></i>
-                                <div class="absolute hidden group-hover:block bg-[#1A242C] text-white text-xs rounded-lg p-2 w-48 z-50 -right-2 bottom-full left-1/2 mt-2 shadow-lg border border-gray-700 -translate-x-1/2">
-                                    Estos datos son fundamentales para la salud de tu moto. Nos permiten generar alertas de mantenimiento personalizadas y ofrecerte lecturas de kilometraje más precisas, optimizando su rendimiento y durabilidad.
-                                </div>
-                            </div>
-                        </h2>
-                        <div class="space-y-4 flex-grow">
-                            <div>
-                                <label class="block text-xs sm:text-sm text-gray-400 mb-1">Kilometraje actual</label>
-                                <input type="number" class="form-input text-sm sm:text-base bg-transparent border-b border-gray-400 hover:border-red-500 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500" placeholder="25000">
-                            </div>
-                            <div>
-                                <label class="block text-xs sm:text-sm text-gray-400 mb-1">Tipo de combustible</label>
-                                <select class="form-input bg-transparent border-b border-gray-400 hover:border-red-500 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 text-sm sm:text-base">
-                                    <option class="bg-[#1A202C] text-white">Gasolina</option>
-                                    <option class="bg-[#1A202C] text-white">Diésel</option>
-                                    <option class="bg-[#1A202C] text-white">Eléctrico</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-xs sm:text-sm text-gray-400 mb-1">Capacidad del tanque (litros)</label>
-                                <input type="number" step="0.1" class="form-input text-sm sm:text-base bg-transparent border-b border-gray-400 hover:border-red-500 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500" placeholder="14.5">
-                            </div>
-                            <div>
-                                <label class="block text-xs sm:text-sm text-gray-400 mb-1">Presión recomendada de llantas (PSI)</label>
-                                <div class="flex flex-col sm:flex-row gap-2 sm:gap-4">
-                                    <input type="number" placeholder="Delantera" class="form-input flex-1 text-sm sm:text-base bg-transparent border-b border-gray-400 hover:border-red-500 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500">
-                                    <input type="number" placeholder="Trasera" class="form-input flex-1 text-sm sm:text-base bg-transparent border-b border-gray-400 hover:border-red-500 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500">
-                                </div>
-                            </div>
-                            <div>
-                                <label class="block text-xs sm:text-sm text-gray-400 mb-1">Batería</label>
-                                <input type="text" class="form-input text-sm sm:text-base bg-transparent border-b border-gray-400 hover:border-red-500 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500" placeholder="12V 7Ah">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="flex flex-col border border-gray-700 rounded-lg p-3 sm:p-4">
-                        <h2 class="section-title text-sm sm:text-base text-white-300 font-light mb-4 flex items-center justify-between relative">
-                            <div class="flex items-center gap-2">
-                                <i class="fas fa-file-lines text-lg sm:text-xl"></i>
-                                <span>Documentación Legal</span>
-                            </div>
-                            <div class="relative group">
-                                <i class="fas fa-circle-question text-gray-400 hover:text-yellow-500 cursor-help text-sm sm:text-base"></i>
-                                <div class="absolute hidden group-hover:block bg-[#1A242C] text-white text-xs rounded-lg p-2 w-48 z-50 -right-2 bottom-full left-1/2 mt-2 shadow-lg border border-gray-700 -translate-x-1/2">
-                                    Mantener tu documentación legal al día aquí te ofrece tranquilidad. Podrás acceder a tus documentos importantes en cualquier momento, evitando contratiempos si los olvidas o extravías.
-                                </div>
-                            </div>
-                        </h2>
-                        <div class="space-y-4 flex-grow">
-                            <div>
-                                <label class="block text-xs sm:text-sm text-gray-400 mb-1">SOAT vigente hasta</label>
-                                <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2">
-                                    <input type="date" class="form-input flex-1 text-sm sm:text-base bg-transparent border-b border-gray-400 hover:border-red-500 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500">
-                                    <span class="text-gray-400 text-xs sm:text-sm">o</span>
-                                    <label for="soatUpload" class="bg-[#EF4444] hover:bg-[#DC2626] px-3 py-1 rounded text-xs sm:text-sm transition cursor-pointer whitespace-nowrap">
-                                        Subir PDF
-                                        <input type="file" id="soatUpload" accept=".pdf" class="hidden">
-                                    </label>
-                                </div>
-                            </div>
-                            <div>
-                                <label class="block text-xs sm:text-sm text-gray-400 mb-1">Revisión técnico-mecánica</label>
-                                <label for="tecnomecanicaUpload" class="w-full bg-transparent border-b border-gray-400 hover:border-red-500 p-2 text-left text-xs sm:text-sm transition rounded cursor-pointer block focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500">
-                                    Seleccionar archivo...
-                                    <input type="file" id="tecnomecanicaUpload" accept=".pdf" class="hidden">
-                                </label>
-                            </div>
-                            <div>
-                                <label class="block text-xs sm:text-sm text-gray-400 mb-1">Tarjeta de propiedad o título</label>
-                                <input type="text" class="form-input text-sm sm:text-base bg-transparent border-b border-gray-400 hover:border-red-500 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500" placeholder="Número de tarjeta">
-                            </div>
-                        </div>
-                        <div class="p-0 text-right mt-0">
-                            <button type="button" class="save-button px-4 py-2 sm:px-6 sm:py-3 text-sm sm:text-base w-full hover:bg-[#00FFB7]">
-                                Guardar Cambios
-                            </button>
-                        </div>
-                    </div>
+        <!-- NUEVO DISEÑO ANGULAR - CONTENEDOR PRINCIPAL -->
+        <section class="w-full h-[400px] grid grid-cols-[650px_400px_270px] grid-rows-1 relative shadow-2xl mb-6">
+            
+            <!-- Sección A: Imagen de la moto (650px) -->
+            <div class="motorcycle-layout__image-area clip-moto col-span-1 row-span-1 overflow-hidden z-10 relative">
+                <input type="file" id="upload-moto-image" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-20" />
+                <div id="moto-image-display" class="border border-gray-300 rounded-lg p-1 mb-6w-full h-full flex flex-col justify-center items-center text-white bg-gray-900/50 transition-opacity duration-300">
+                    
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 mb-2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.58-1.58L10.5 11.25H21a2.25 2.25 0 00-2.25-2.25H15a2.25 2.25 0 00-2.25 2.25v2.25m-1.5-3.52l2.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6.75A2.25 2.25 0 016 4.5h2.25" />
+                    </svg>
+                    
+                    <p class="text-sm font-bold">Subir foto de tu moto</p>
+                    <p class="text-xs text-gray-400">Clic para seleccionar o arrastrar y soltar</p>
+                    
                 </div>
             </div>
 
-            <!-- Nueva tarjeta para la imagen de la moto -->
-            <div class="flex flex-col gap-6 w-full lg:min-w-[300px] lg:max-w-[400px]">
-            <!-- Tarjeta de imagen de moto -->
-            <div class="rounded-xl flex flex-col items-center">
-                <h2 class="text-2xl font-semibold text-gray-900 mb-4">Mi Moto</h2>
-                <form id="motoForm" th:action="@{/actualizar-imagen-moto}" method="post" enctype="multipart/form-data" class="w-full">
-                    <label for="motoUpload" class="moto-image-container relative h-48 sm:h-56 md:h-64 cursor-pointer">
-                        <img id="motoPreview" src="" alt="Foto de tu moto" class="w-full h-full object-cover rounded-xl transition-opacity duration-300 hidden">
-                        <div id="uploadArea" class="flex flex-col items-center justify-center h-full w-full p-4 text-gray-400">
-                            <i class="fas fa-camera text-3xl sm:text-4xl mb-2 sm:mb-3"></i>
-                            <p class="text-center text-sm sm:text-base">Sube foto de tu moto<br><span class="text-xs sm:text-sm">(383×268 px)</span></p>
+            <!-- Sección B: Formulario (400px) -->
+            <div class="border border-gray-300 motorcycle-layout__form-area clip-form bg-dark-form col-span-1 row-span-1 p-6 text-white z-30 ml-[-110px] relative">
+                <div class="skew-container-b h-full"> 
+                    
+                    <form id="motoForm" class="h-full flex flex-col ">
+                        
+                        <div>
+                            <h3 class="text-white text-lg font-oswald font-bold mb-2 border-b border-gray-600 pb-1 skew-content-b">Datos básicos de la moto</h3>
+                            
+                            <div class="space-y-1 text-sm">
+                                
+                                <div class="flex flex-col">
+                                    <input type="text" id="placa" name="placa" placeholder="Placa (Ej: ABC-123)" 
+                                        class="bg-transparent border-b border-gray-700 focus:border-blue-500 outline-none text-white p-1 w-full"/>
+                                </div>
+                                
+                                <div class="flex flex-col">
+                                    <input type="text" id="marca" name="marca" placeholder="Marca (Ej: Yamaha)" 
+                                        class="bg-transparent border-b border-gray-700 focus:border-blue-500 outline-none text-white p-1 w-full"/>
+                                </div>
+                                
+                                <div class="flex flex-col">
+                                    <input type="text" id="modelo" name="modelo" placeholder="Modelo (Ej: R1)" 
+                                        class="bg-transparent border-b border-gray-700 focus:border-blue-500 outline-none text-white p-1 w-full"/>
+                                </div>
+                                
+                                <div class="flex flex-col">
+                                    <input type="text" id="color" name="color" placeholder="Color (Ej: Negro)" 
+                                        class="bg-transparent border-b border-gray-700 focus:border-blue-500 outline-none text-white p-1 w-full"/>
+                                </div>
+                            </div>
                         </div>
-                        <input type="file" id="motoUpload" name="motoUpload" accept="image/*" class="hidden">
-                    </label>
-                </form>
-            </div>
-            <!-- Tarjeta de contenido adicional -->
-            <div class="bg-white rounded-xl shadow-lg p-6 right-card">
-                <h3 class="font-bold text-lg sm:text-xl">Nuestros accesorios</h3>
-                <p class="mt-2 text-sm sm:text-base">Encuentra todo lo que necesitas para tu moto.</p>
-            </div>
-        </div>
-        </div>
 
-        <div class="bottom-section-card p-0 sm:p-2 mt-2 w-full h-auto lg:h-[220px] overflow-hidden relative">
-            <h3 class="font-light text-lg text-sm text-yellow-500 mb-0 ml-5">Tips para Moteros</h3>
-            <div id="tips-carousel-container" class="relative h-full">
-                <div id="tips-inner-wrapper" class="flex transition-transform duration-500 ease-in-out h-full">
-                    <div class="tip-item-carousel">
-                        <div class="bg-[#1A242C] p-4 rounded-lg flex flex-col justify-between w-[300px] h-[180px] mr-10">
-                            <h4 class="font-semibold text-base sm:text-lg text-gray-200 mb-2">Revisa la Presión de tus Llantas</h4>
-                            <p class="text-sm sm:text-base text-gray-300">Una presión adecuada mejora la seguridad, el agarre y la vida útil de tus neumáticos. ¡Compruébala antes de cada viaje!</p>
-                        </div>
-                    </div>
-                    <div class="tip-item-carousel">
-                        <div class="bg-gray-800 p-4 rounded-lg flex flex-col justify-between w-[300px] h-[180px] mr-10">
-                            <h4 class="font-semibold text-base sm:text-lg text-gray-200 mb-2">Cambio de Aceite Regular</h4>
-                            <p class="text-sm sm:text-base text-gray-300">El aceite es la sangre de tu motor. Un cambio a tiempo previene el desgaste prematuro y asegura un rendimiento óptimo.</p>
-                        </div>
-                    </div>
-                    <div class="tip-item-carousel">
-                        <div class="bg-gray-800 p-6 rounded-lg flex flex-col justify-between w-[300px] h-[180px] mr-10">
-                            <h4 class="font-semibold text-base sm:text-lg text-gray-200 mb-2">Ajusta tus Frenos</h4>
-                            <p class="text-sm sm:text-base text-gray-300">Un sistema de frenos en buen estado es vital. Asegúrate de que las pastillas y el líquido estén en óptimas condiciones.</p>
-                        </div>
-                    </div>
-                    <div class="tip-item-carousel">
-                        <div class="bg-gray-800 p-6 rounded-lg flex flex-col justify-between w-[300px] h-[180px] mr-8">
-                            <h4 class="font-semibold text-base sm:text-lg text-gray-200 mb-2">Limpia y Lubrica la Cadena</h4>
-                            <p class="text-sm sm:text-base text-gray-300">Una cadena limpia y bien lubricada reduce la fricción, prolonga su vida útil y mejora la transmisión de potencia.</p>
-                        </div>
-                    </div>
-                    <div class="tip-item-carousel">
-                        <div class="bg-gray-800 p-6 rounded-lg flex flex-col justify-between w-[300px] h-[180px] mr-10 ">
-                            <h4 class="font-semibold text-base sm:text-lg text-gray-200 mb-2">Verifica las Luces</h4>
-                            <p class="text-sm sm:text-base text-gray-300">Asegúrate de que todas tus luces (faros, direccionales, freno) funcionen correctamente para ser visible y seguro.</p>
-                        </div>
-                    </div>
-                    <div class="tip-item-carousel">
-                        <div class="bg-gray-800 p-4 rounded-lg flex flex-col justify-between w-[300px] h-[180px] mr-10">
-                            <h4 class="font-semibold text-base sm:text-lg text-gray-200 mb-2">Inspecciona los Niveles de Líquidos</h4>
-                            <p class="text-sm sm:text-base text-gray-300">Revisa el líquido de frenos, refrigerante y otros fluidos para evitar problemas mecánicos.</p>
-                        </div>
-                    </div>
-                    <div class="tip-item-carousel">
-                        <div class="bg-gray-800 p-4 rounded-lg flex flex-col justify-between w-[300px] h-[180px] mr-10">
-                            <h4 class="font-semibold text-base sm:text-lg text-gray-200 mb-2">Usa Equipo de Protección Adecuado</h4>
-                            <p class="text-sm sm:text-base text-gray-300">Casco, guantes, chaqueta y botas son esenciales para tu seguridad en la carretera.</p>
-                        </div>
-                    </div>
-                    <div class="tip-item-carousel">
-                        <div class="bg-gray-800 p-6 rounded-lg flex flex-col justify-between w-[300px] h-[180px] mr-10">
-                            <h4 class="font-semibold text-base sm:text-lg text-gray-200 mb-2">Planifica tus Rutas</h4>
-                            <p class="text-sm sm:text-base text-gray-300">Conocer tu camino y las condiciones de la carretera te ayudará a tener un viaje más seguro y placentero.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+                        <div class="my-3 h-px bg-gray-600"></div>
 
-        <div class="product-card-display w-full mt-6 lg:max-w-[800px] ml-auto">
-            <div class="flex flex-col md:flex-row rounded-lg overflow-hidden border border-gray-700 shadow-lg h-auto md:h-[200px]">
-                <div class="product-details-area bg-[#212326] p-4 flex flex-col justify-center w-full md:w-2/3">
-                    <h3 class="font-bold text-lg sm:text-xl text-yellow-500 mb-2 leading-tight">Casco XL Pro con Alerón Respiratorio</h3>
-                    <p class="text-sm sm:text-base text-gray-300 mb-4 line-clamp-3">
-                        Diseñado para la máxima protección y confort. Cuenta con sistema de ventilación avanzado y visera anti-rayas. Ideal para viajes largos y uso diario.
-                    </p>
-                    <div class="flex items-center justify-between">
-                        <span class="text-xl sm:text-2xl font-bold text-white-500">$250.000 COP</span>
-                        <button class="bg-red-600 hover:bg-[#00FFB7] text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out text-sm sm:text-base">
-                            Ver Producto
+                        <div>
+                            <h3 class="text-white text-lg font-oswald font-bold mb-2 border-b border-gray-600 pb-1 skew-content-b">Datos técnicos</h3>
+                            
+                            <div class="space-y-1 text-sm">
+                                
+                                <div class="flex flex-col">
+                                    <input type="number" id="kilometraje" name="kilometraje" placeholder="Kilometraje actual (Ej: 15000 km)" 
+                                        class="bg-transparent border-b border-gray-700 focus:border-blue-500 outline-none text-white p-1 w-full"/>
+                                </div>
+                                
+                                <div class="flex flex-col">
+                                    <input type="date" id="tecnomecanica" name="tecnomecanica" placeholder="Vencimiento Tecnómédica"
+                                        class="bg-transparent border-b border-gray-700 focus:border-blue-500 outline-none text-white p-1 w-full"/>
+                                </div>
+                                
+                                <div class="flex flex-col">
+                                    <input type="date" id="soat" name="soat" placeholder="Vencimiento Soat"
+                                        class="bg-transparent border-b border-gray-700 focus:border-blue-500 outline-none text-white p-1 w-full"/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Botón FUERA del contenedor inclinado -->
+                        <button type="submit" class="absolute bottom-1 right-60 w-11 h-11 bg-green-600 hover:bg-green-700 text-white rounded-full flex items-center justify-center shadow-xl transform transition-all duration-300 hover:scale-110 z-40">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                            </svg>
                         </button>
-                    </div>
-                </div>
-                
-                <div class="product-image-area w-full md:w-1/3 bg-gray-800 flex-shrink-0">
-                    <img th:src="@{/imagenes/casco 2.jpg}" 
-                            alt="Casco XL Pro con Alerón Respiratorio" 
-                            class="w-full h-full object-cover">
+                    </form>
+                    
+                    
                 </div>
             </div>
-        </div>
+            
 
+            <!-- Secciones C y D: Tips y Producto (270px) -->
+            <div class="col-span-1 row-span-1 flex flex-col justify-between ml-[-210px] z-10">
+                
+                <!-- Sección C: Tips para moteros (Carrusel) - 190px de altura -->
+                <div id="tips-carousel-container" class="relative overflow-hidden h-[190px] skew-c"> 
+                    <h3 class="text-white text-lg font-oswald font-bold mb-2 pb-1 skew-content-c ml-4">Tips para moteros</h3>
+                    
+                    <div class="carousel-container h-[calc(100%-40px)]">
+                        <div id="tips-inner-wrapper" class="carousel-inner h-full">
+                            
+                            <div class="carousel-item h-full"> 
+                            <div class="bg-dark-form p-4 rounded-lg flex flex-col h-full skew-content-c">
+                                <h4 class="font-semibold text-base text-gray-200 mb-2">Revisa la Presión de tus Llantas</h4>
+                                <p class="text-xs text-gray-300">Una presión adecuada mejora la seguridad, el agarre y la vida útil de tus neumáticos. ¡Compruébala antes de cada viaje!</p>
+                            </div>
+                            </div>
+                            
+                            <div class="carousel-item h-full">
+                                <div class="bg-dark-form p-4 rounded-lg flex flex-col h-full skew-content-c">
+                                    <h4 class="font-semibold text-base text-gray-200 mb-2">Cambio de Aceite Regular</h4>
+                                    <p class="text-xs text-gray-300">El aceite es la sangre de tu motor. Un cambio a tiempo previene el desgaste prematuro y asegura un rendimiento óptimo.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="carousel-item h-full">
+                                <div class="bg-dark-form p-4 rounded-lg flex flex-col h-full skew-content-c">
+                                    <h4 class="font-semibold text-base text-gray-200 mb-2">Ajusta tus Frenos</h4>
+                                    <p class="text-xs text-gray-300">Un sistema de frenos en buen estado es vital. Asegúrate de que las pastillas y el líquido estén en óptimas condiciones.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="carousel-item h-full">
+                                <div class="bg-dark-form p-4 rounded-lg flex flex-col h-full skew-content-c">
+                                    <h4 class="font-semibold text-base text-gray-200 mb-2">Limpia y Lubrica la Cadena</h4>
+                                    <p class="text-xs text-gray-300">Una cadena limpia y bien lubricada reduce la fricción, prolonga su vida útil y mejora la transmisión de potencia.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="carousel-item h-full">
+                                <div class="bg-dark-form p-4 rounded-lg flex flex-col h-full skew-content-c">
+                                    <h4 class="font-semibold text-base text-gray-200 mb-2">Verifica las Luces</h4>
+                                    <p class="text-xs text-gray-300">Asegúrate de que todas tus luces (faros, direccionales, freno) funcionen correctamente para ser visible y seguro.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="carousel-item h-full">
+                                <div class="bg-dark-form p-4 rounded-lg flex flex-col h-full skew-content-c">
+                                    <h4 class="font-semibold text-base text-gray-200 mb-2">Inspecciona los Niveles de Líquidos</h4>
+                                    <p class="text-xs text-gray-300">Revisa el líquido de frenos, refrigerante y otros fluidos para evitar problemas mecánicos.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="carousel-item h-full">
+                                <div class="bg-dark-form p-4 rounded-lg flex flex-col h-full skew-content-c">
+                                    <h4 class="font-semibold text-base text-gray-200 mb-2">Usa Equipo de Protección Adecuado</h4>
+                                    <p class="text-xs text-gray-300">Casco, guantes, chaqueta y botas son esenciales para tu seguridad en la carretera.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="carousel-item h-full">
+                                <div class="bg-dark-form p-4 rounded-lg flex flex-col h-full skew-content-c">
+                                    <h4 class="font-semibold text-base text-gray-200 mb-2">Planifica tus Rutas</h4>
+                                    <p class="text-xs text-gray-300">Conocer tu camino y las condiciones de la carretera te ayudará a tener un viaje más seguro y placentero.</p>
+                                </div>
+                            </div>
+                            
+                            <!-- ... los otros  ... -->
+                            
+                        </div>
+                    </div>
+                    
+                    <!-- Indicadores del carrusel -->
+                    <div class="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex space-x-2">
+                        <button class="carousel-indicator w-2 h-2 rounded-full bg-gray-500" data-index="0"></button>
+                        <button class="carousel-indicator w-2 h-2 rounded-full bg-gray-500" data-index="1"></button>
+                        <button class="carousel-indicator w-2 h-2 rounded-full bg-gray-500" data-index="2"></button>
+                        <button class="carousel-indicator w-2 h-2 rounded-full bg-gray-500" data-index="3"></button>
+                        <button class="carousel-indicator w-2 h-2 rounded-full bg-gray-500" data-index="4"></button>
+                        <button class="carousel-indicator w-2 h-2 rounded-full bg-gray-500" data-index="5"></button>
+                        <button class="carousel-indicator w-2 h-2 rounded-full bg-gray-500" data-index="6"></button>
+                        <button class="carousel-indicator w-2 h-2 rounded-full bg-gray-500" data-index="7"></button>
+                    </div>
+                </div>
+
+                <!-- Sección D: Producto recomendado - 190px de altura -->
+                <div class="motorcycle-layout__product-area clip-product bg-dark-content h-[190px] mt-4 flex text-white relative ml-[-10px] skew-d">
+        
+                    <div class="w-2/5 p-4 z-10 skew-content-d"> 
+                        
+                        <h3 class="text-white text-lg font-oswald font-extrabold mb-2">Descripción del producto</h3>
+                        <p class="text-xs text-gray-300 skew-content-d">Casco modular de alta seguridad con ventilación activa y visera anti-empañamiento. Disponible en 3 colores. **¡Ver más!**</p>
+                        
+                    </div>
+                    
+                    <div class="w-3/5 overflow-hidden rounded-r-lg relative skew-content-d"> 
+                        <img th:src="@{/imagenes/casco 2.jpg}" 
+                            alt="Motero con casco, producto en venta" 
+                            class="w-full h-full object-cover"/>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MANTENER LAS SECCIONES EXISTENTES (Alertas y SOAT) -->
         <div class="bottom-section-card p-4 sm:p-6 mt-6 w-full">
-            <h3 class="font-bold text-lg sm:text-xl">Alertas programadas</h3>
+            <h3 class="font-oswald font-bold text-lg sm:text-xl">Alertas programadas</h3>
             <p class="mt-2 text-sm sm:text-base">Aquí verás tus alertas personalizadas para mantenimientos, documentos y más.</p>
             <div class="mt-4 text-gray-500 text-center text-sm sm:text-base">
                 <p>No tienes alertas programadas por ahora.</p>

@@ -5,6 +5,27 @@
     <div th:if="${successMessage}" class="bg-green-100 text-green-700 px-4 py-2 sm:px-6 sm:py-3 mb-4 border border-green-400 rounded text-sm sm:text-base" th:text="${successMessage}"></div>
     <div th:if="${errorMessage}" class="bg-red-100 text-red-700 px-4 py-2 sm:px-6 sm:py-3 mb-4 border border-red-400 rounded text-sm sm:text-base" th:text="${errorMessage}"></div>
     
+    <!--BARRA DE BUSQUEDA-->
+    <div class="mb-4 flex justify-end">
+        <form th:action="@{/panel/productos/buscar}" method="get" class="flex items-center space-x-2">
+            <input type="text" 
+                name="keyword" 
+                th:value="${keyword}" 
+                placeholder="Buscar por nombre..." 
+                class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 w-64 text-gray-700"/>
+            
+            <button type="submit" 
+                    class="bg-pink-600 text-white px-4 py-2 rounded-md hover:bg-pink-700 transition duration-150">
+                <i class="fas fa-search"></i> Buscar
+            </button>
+            
+            <a th:href="@{/productos}" 
+            class="bg-gray-400 text-white px-4 py-2 rounded-md hover:bg-gray-500 transition duration-150">
+            Limpiar
+            </a>
+        </form>
+    </div>
+
     <div class="overflow-x-auto bg-white p-4 sm:p-6 md:p-8 rounded-lg shadow-lg">
         <div class="min-w-[900px]">
             <table class="w-full text-left border border-gray-200 rounded-lg overflow-hidden">

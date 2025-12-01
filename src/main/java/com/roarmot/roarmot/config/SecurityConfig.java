@@ -1,6 +1,5 @@
 package com.roarmot.roarmot.config;
 
-import com.roarmot.roarmot.Services.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -11,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 public class SecurityConfig {
@@ -18,64 +18,78 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            // 1. CSRF: Ignorar para todos los POST que manejan el registro y el producto.
+            // 1. CSRF: Configuración SEGURA
             .csrf(csrf -> csrf
-                .ignoringRequestMatchers("/enviar-codigo", "/validar-codigo", "/guardar-usuario", "/panel/ProductProcess")
+                .ignoringRequestMatchers(
+                    "/enviar-codigo", 
+                    "/validar-codigo",
+                    "/guardar-usuario",
+                    "/panel/ProductProcess",
+                    "/api/email/**"  // APIs públicas sin CSRF
+                )
             )
             .authorizeHttpRequests(authorize -> authorize
+                // ORDEN CRÍTICO: De más específico a más general
                 
-                // 2. Rutas PÚBLICAS (GET)
+                // 1. APIs PÚBLICAS (sin autenticación)
+                .requestMatchers("/api/email/**").permitAll()
+
+                //  - APIs de Reportes para Vendedores
+                .requestMatchers("/api/reportes/**").hasAuthority("ROLE_Vendedor")
+    
+                .requestMatchers("/api/motos/**").authenticated()  // APIs protegidas
+                
+                // 2. RECURSOS ESTÁTICOS (sin autenticación)
+                .requestMatchers("/css/**", "/js/**", "/imagenes/**", "/uploads/**", "/products/**", "/webjars/**",
+                    "/favicon.ico", "/favicon.icon", "/error"
+                ).permitAll()
+                
+                // 3. PÁGINAS PÚBLICAS (sin autenticación)
                 .requestMatchers("/", "/login", "/RegistroPaso1", "/RegistroPaso2", "/RegistroPaso3").permitAll()
                 
-                // 3. Rutas PÚBLICAS (POST)
-                .requestMatchers(HttpMethod.POST, "/enviar-codigo", "/validar-codigo", "/guardar-usuario").permitAll() 
+                // 4. ENDPOINTS POST PÚBLICOS (sin autenticación)
+                .requestMatchers(HttpMethod.POST, "/enviar-codigo", "/validar-codigo", "/guardar-usuario").permitAll()
                 
-                // 4. [PROTECCIÓN VENDEDOR]
-                // TODAS las rutas bajo /panel (GETs y POSTs) requieren el rol Vendedor.
-                // Esta línea DEBE estar DESCOMENTADA para que funcione la seguridad.
+                // 5. ÁREA ADMINISTRATIVA (requiere autenticación y rol)
                 .requestMatchers("/panel/**").hasAuthority("ROLE_Vendedor")
                 
-                // 5. Cualquier otra solicitud DEBE estar autenticada
+                // 6. TODAS LAS DEMÁS RUTAS (requieren autenticación)
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
                 .loginPage("/login") 
                 .loginProcessingUrl("/login") 
                 .defaultSuccessUrl("/dashboard", true)
-                .failureUrl("/login?error")
+                .failureUrl("/login?error=true")
                 .permitAll()
             )
-            // *** INICIO: CONFIGURACIÓN DETALLADA DEL LOGOUT ***
             .logout(logout -> logout
-                // URL que dispara el proceso de cierre de sesión (POST recomendado)
                 .logoutUrl("/logout") 
-                // URL a la que se redirige al usuario después de un cierre de sesión exitoso
-                .logoutSuccessUrl("/login?logout") 
-                // Invalida la sesión HTTP actual
+                .logoutSuccessUrl("/login?logout=true")
                 .invalidateHttpSession(true)
-                // Borra la cookie de sesión si existe
                 .deleteCookies("JSESSIONID")
-                // Permite a todos acceder a la URL de logout
                 .permitAll()
+            )
+            // 7. CONFIGURACIONES ADICIONALES DE SEGURIDAD
+            .sessionManagement(session -> session
+                .maximumSessions(1) // Solo una sesión por usuario
+                .maxSessionsPreventsLogin(false) // Permite nuevo login, cierra sesión anterior
+            )
+            .headers(headers -> headers
+                .contentSecurityPolicy(csp -> csp
+                    .policyDirectives("default-src 'self';" + 
+
+                        "script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; " +
+                        "connect-src 'self' https://fonts.googleapis.com; " +
+                        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.tailwindcss.com; " +  // CSS locales + Google Fonts
+                        "font-src 'self' https://fonts.gstatic.com; " + // Fuentes locales + Google Fonts
+                        "img-src 'self' data: https:;") // Imágenes locales y externas
+                
+                )
+                .frameOptions(frame -> frame.deny()) // Protección contra clickjacking
             );
-            // *** FIN: CONFIGURACIÓN DETALLADA DEL LOGOUT ***
                 
         return http.build();
-    }
-
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers(
-            "/css/**", 
-            "/js/**", 
-            "/imagenes/**", 
-            "/favicon.ico", 
-            "/uploads/**",
-            // ¡Ajuste! La ruta web para mostrar imágenes de productos
-            "/products/**",
-
-            "/favicon.icon"
-        );
     }
 
     @Bean

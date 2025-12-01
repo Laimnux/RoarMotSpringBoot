@@ -34,7 +34,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.roarmot.roarmot.models.Usuario;
 import com.roarmot.roarmot.util.ExcelGenerator;
 import com.roarmot.roarmot.Services.CustomUserDetailsService; // <-- ¡Asegúrate de tener este servicio!
+import com.roarmot.roarmot.Services.EmailService;
 import com.roarmot.roarmot.dto.ProductoQuickEditDTO; // <--- NUEVO IMPORT
+import com.roarmot.roarmot.repositories.ProductoRepository;
 // PAQUETES ESTÁNDAR DE JAVA A AGREGAR PARA MAPAS Y LISTAS
 import java.util.Map;
 import java.util.HashMap;
@@ -44,6 +46,8 @@ import java.util.stream.Collectors; // Necesario para la lógica de errores
 import org.springframework.security.core.Authentication; 
 import java.io.IOException; // ¡Importante!
 import java.util.List;
+
+import java.util.Arrays;
 
 
 
@@ -63,6 +67,12 @@ public class VendedorController {
     
     @Autowired
     private CategoriaService categoriaService;
+
+    @Autowired // <--- ¡Esta anotación es vital!
+    private ProductoRepository productoRepository;
+
+    @Autowired
+    private EmailService emailService;
 
     // Inyección de dependencias en el constructor
     public VendedorController(
@@ -608,5 +618,134 @@ public class VendedorController {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error interno al generar el archivo Excel.");
         }
     }
+
     
+
+    /**
+     * Muestra la lista de productos del vendedor. 
+     * También maneja la funcionalidad de búsqueda por nombre, filtrando siempre por el usuario autenticado.
+     * @param model El objeto Model para pasar datos a la vista.
+     * @param keyword Palabra clave de búsqueda (opcional).
+     * @param authentication Objeto de autenticación para obtener el usuario actual.
+     * @return El nombre de la plantilla (ej. "productos-gestion").
+     */
+    @GetMapping({"/productos", "/productos/buscar"})
+    public String listarProductos(
+            Model model, 
+            @RequestParam(value = "keyword", required = false) String keyword,
+            Authentication authentication) {
+        
+        // =========================================================================
+        // PASO CLAVE: OBTENER EL ID DEL VENDEDOR AUTENTICADO
+        // =========================================================================
+        Usuario usuarioActual;
+        try {
+            usuarioActual = getAuthenticatedUser(authentication);
+        } catch (RuntimeException e) {
+            // Si hay un error de autenticación, retorna una vista de error o redirige.
+            model.addAttribute("productos", List.of());
+            model.addAttribute("errorMessage", "Error de autenticación: " + e.getMessage());
+            model.addAttribute("contentFragment", "fragmentos/panelVendedor/editProduct"); // O la vista que uses
+            return "panelVendedor"; // O la vista que maneje el error
+        }
+        
+        Long idVendedor = usuarioActual.getIdUsuario();
+        List<Producto> productos;
+
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            // Caso 1: Hay una palabra clave de búsqueda.
+            String trimmedKeyword = keyword.trim();
+            
+            // CORRECCIÓN: Usar el método que filtra por nombre Y VENDEDOR
+            productos = productoRepository.buscarPorNombre(trimmedKeyword, idVendedor); 
+            
+            model.addAttribute("keyword", trimmedKeyword); 
+        } else {
+            // Caso 2: Listado completo (no hay búsqueda).
+            
+            // CORRECCIÓN: Usar el método que lista SOLO los productos del VENDEDOR
+            productos = productoRepository.findByUsuario_IdUsuario(idVendedor); 
+            model.addAttribute("keyword", ""); // Para limpiar la caja de texto en la vista
+        }
+        
+        model.addAttribute("productos", productos);
+        model.addAttribute("contentFragment", "fragmentos/panelVendedor/editProduct");
+        // Nota: El nombre de la plantilla padre debe ser 'panelVendedor', no 'productos-gestion'
+        return "panelVendedor"; 
+    }
+
+    // Método para mostrar el formulario de envío de promociones
+    @GetMapping("/addPromociones")
+    public String showPromocionesForm(Model model, Authentication authentication) {
+        try {
+            // Validar que el usuario esté autenticado
+            Usuario usuarioActual = getAuthenticatedUser(authentication);
+            model.addAttribute("nombreUsuario", usuarioActual.getNombre());
+            
+            model.addAttribute("contentFragment", "fragmentos/panelVendedor/addPromociones");
+            // Podemos agregar datos adicionales si es necesario
+        } catch (RuntimeException e) {
+            model.addAttribute("errorGlobal", "Error de autenticación: " + e.getMessage());
+            return "redirect:/login";
+        } catch (Exception e) {
+            System.err.println("Error al cargar formulario de promociones: " + e.getMessage());
+            model.addAttribute("errorGlobal", "Error interno al cargar el formulario de promociones.");
+        }
+        return "panelVendedor";
+    }
+
+    // Método para procesar el envío de promociones (POST)
+    @PostMapping("/enviar-promociones")
+    public String enviarPromociones(
+        @RequestParam String emails,
+        @RequestParam String descuento,
+        @RequestParam String producto,
+        @RequestParam String fechaExpiracion,
+        @RequestParam String subject,
+        RedirectAttributes redirectAttributes,
+        Authentication authentication) {
+        
+        try {
+            // 1. Validar autenticación
+            Usuario usuarioActual = getAuthenticatedUser(authentication);
+            System.out.println("Usuario autenticado: " + usuarioActual.getNombre());
+            
+            // 2. Parsear emails
+            List<String> listaEmails = Arrays.stream(emails.split("[,\\n\\r]+"))
+                .map(String::trim)
+                .filter(email -> !email.isEmpty() && email.contains("@"))
+                .collect(Collectors.toList());
+            
+            System.out.println("Emails parseados: " + listaEmails);
+            
+            if (listaEmails.isEmpty()) {
+                redirectAttributes.addFlashAttribute("errorMessage", "No se proporcionaron emails válidos.");
+                return "redirect:/panel/addPromociones";
+            }
+            
+            // 3. Preparar variables
+            Map<String, Object> variables = new HashMap<>();
+            variables.put("descuento", descuento);
+            variables.put("producto", producto);
+            variables.put("fechaExpiracion", fechaExpiracion);
+            
+            System.out.println("Variables preparadas: " + variables);
+            
+            // 4. Llamar al EmailService
+            System.out.println("LLAMANDO A EmailService.enviarCorreoMasivoHTML...");
+            emailService.enviarCorreoMasivoHTML(listaEmails, subject, "promocion.html", variables);
+            System.out.println("EmailService ejecutado");
+            
+            redirectAttributes.addFlashAttribute("successMessage", 
+                "Promociones enviadas exitosamente a " + listaEmails.size() + " destinatarios!");
+                
+        } catch (Exception e) {
+            System.err.println("ERROR en enviarPromociones: " + e.getMessage());
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("errorMessage", "Error al enviar promociones: " + e.getMessage());
+        }
+        
+        return "redirect:/panel/addPromociones";
+    }
 }
+    
