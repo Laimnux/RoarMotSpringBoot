@@ -1,20 +1,18 @@
 package com.roarmot.roarmot.Controllers;
-
 import com.roarmot.roarmot.dto.MotoDTO;
 import com.roarmot.roarmot.models.Usuario;
 import com.roarmot.roarmot.Services.MotoService;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import jakarta.servlet.http.HttpServletRequest;
-
 import java.net.Authenticator;
 import java.util.List;
 import com.roarmot.roarmot.Services.CustomUserDetailsService;
-
 import org.springframework.security.core.Authentication;
+import org.springframework.web.multipart.MultipartFile;
+import java.util.HashMap;
+import java.util.Map;
 
 
 
@@ -134,4 +132,35 @@ public class MotoController {
         
         return 1L; // ID temporal - cambiar por el ID del usuario logueado
     }
+
+    // Método para subir la imagen 
+    @PostMapping("/subir-imagen")
+    public ResponseEntity<?> subirImagenMoto(
+            @RequestParam("imagenMoto") MultipartFile archivo,
+            Authentication authentication) {
+        
+        try {
+            // 1. Obtener usuario autenticado
+            Usuario usuarioActual = getAuthenticatedUser(authentication);
+            Long usuarioId = usuarioActual.getIdUsuario();
+            
+            // 2. Delegar al Service la lógica de guardado
+            String rutaImagen = motoService.guardarImagenMoto(archivo, usuarioId);
+            
+            // 3. Crear respuesta
+            Map<String, String> respuesta = new HashMap<>();
+            respuesta.put("nombreArchivo", rutaImagen);
+            respuesta.put("rutaCompleta", rutaImagen);
+            respuesta.put("mensaje", "Imagen subida exitosamente");
+            
+            return ResponseEntity.ok(respuesta);
+            
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body("Error al subir imagen: " + e.getMessage());
+        }
+    }
+
 }

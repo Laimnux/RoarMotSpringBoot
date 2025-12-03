@@ -12,6 +12,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.web.multipart.MultipartFile;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+
 @Service
 @Transactional
 public class MotoService {
@@ -128,5 +135,46 @@ public class MotoService {
         dto.setPlacaMoto(moto.getPlacaMoto());
         dto.setKilometraje(moto.getKilometraje());
         return dto;
+    }
+
+    public String guardarImagenMoto(MultipartFile archivo, Long usuarioId) throws IOException {
+        // 1. Validar que haya archivo
+        if (archivo.isEmpty()) {
+            throw new IllegalArgumentException("No se ha seleccionado ninguna imagen");
+        }
+        
+        // 2. Validar que sea imagen
+        String contentType = archivo.getContentType();
+        if (contentType == null || !contentType.startsWith("image/")) {
+            throw new IllegalArgumentException("Solo se permiten archivos de imagen (JPG, PNG, etc.)");
+        }
+        
+        // 3. Generar nombre único
+        String nombreOriginal = archivo.getOriginalFilename();
+        String extension = nombreOriginal.substring(nombreOriginal.lastIndexOf("."));
+        String nuevoNombre = "moto_" + usuarioId + "_" + System.currentTimeMillis() + extension;
+        
+        // 4. Ruta donde guardar (usa data/uploads/motos/)
+        String uploadDir = "data/uploads/motos/";
+        Path uploadPath = Paths.get(uploadDir);
+        
+        // 5. Crear directorio si no existe
+        if (!Files.exists(uploadPath)) {
+            Files.createDirectories(uploadPath);
+        }
+        
+        // 6. Guardar archivo
+        Path filePath = uploadPath.resolve(nuevoNombre);
+        Files.copy(archivo.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+        // Después de guardar el archivo, agrega:
+        System.out.println("🔍 [SERVICE] Ruta ABSOLUTA del archivo: " + filePath.toAbsolutePath());
+        System.out.println("🔍 [SERVICE] ¿Archivo existe?: " + Files.exists(filePath));
+        System.out.println("🔍 [SERVICE] Tamaño del archivo: " + Files.size(filePath) + " bytes");
+        
+        // 7. Retornar nombre del archivo (la entidad Moto guardará la ruta completa)
+        return "/motos/" + nuevoNombre; // IMPORTANTE: Así quedará en la BD
+
+        
     }
 }

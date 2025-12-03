@@ -77,14 +77,16 @@ public class SecurityConfig {
             )
             .headers(headers -> headers
                 .contentSecurityPolicy(csp -> csp
-                    .policyDirectives("default-src 'self';" + 
-
-                        "script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; " +
+                    .policyDirectives(
+                        "default-src 'self'; " +
+                        "script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://kit.fontawesome.com; " +
                         "connect-src 'self' https://fonts.googleapis.com; " +
-                        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.tailwindcss.com; " +  // CSS locales + Google Fonts
-                        "font-src 'self' https://fonts.gstatic.com; " + // Fuentes locales + Google Fonts
-                        "img-src 'self' data: https:;") // Imágenes locales y externas
-                
+                        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.tailwindcss.com https://cdnjs.cloudflare.com; " +
+                        "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; " +
+                        "img-src 'self' data: https:; " +
+                        "frame-ancestors 'none';"
+
+                    ) // Imágenes locales y externas
                 )
                 .frameOptions(frame -> frame.deny()) // Protección contra clickjacking
             );

@@ -31,6 +31,15 @@
             color: white;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
+        /* ===== ESTILOS PARA IMAGEN BORDE MOTO ===== */
+        .border-custom-moto {
+            border-color: #5C7589;
+        }
+
+        /* ===== ESTILOS PARA FORMULARIO MOTO ===== */
+        .border-custom-form-moto{
+            border-color:#5C7589;
+        }
 
         /* ===== MANTENER ESTOS ESTILOS GENERALES ===== */
         .main-content-wrapper {
@@ -157,7 +166,7 @@
 
         /* ===== NUEVOS ESTILOS PARA DISEÑO ANGULAR ===== */
         .clip-moto { clip-path: polygon(0 0, 100% 0, 80% 100%, 0 100%); }
-        .clip-form { clip-path: polygon(25% 0%, 66% 0, 45% 100%, 0 100%); }
+        .clip-form { clip-path: polygon(25% 0%, 67% 0, 46% 100%, 0 100%); }
         .clip-tips { clip-path: polygon(10% 0, 100% 0, 100% 100%, 0 100%); }
         .clip-product { clip-path: polygon(1% 0, 100% 0%, 100% 100%, 0 100%); }
 
@@ -168,7 +177,6 @@
         }
 
         .skew-content-b, .skew-container-b input {
-            transform: skewX(17deg);
             text-align: left !important; 
             padding-left: 60px; 
         }
@@ -201,7 +209,7 @@
         }
 
         .skew-d {
-            transform: skewX(-15deg) translateX(-16px);
+            transform: skewX(-13deg) translateX(-16px);
         }
 
         .skew-content-d {
@@ -247,10 +255,158 @@
         .-skew-x-17deg {
             transform: skewX(17deg);
         }
-
+        
         /* Colores personalizados para el nuevo diseño */
         .bg-dark-form { background-color: #141824; }
         .bg-dark-content { background-color: #1a1e2f; }
 
+        /* ===== SOLUCIÓN PARA INPUTS BORROSOS ===== */
+        .skew-container-b input,
+        .skew-content-b input,
+        #motoForm input {
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+            filter: none !important;
+            opacity: 1 !important;
+            background-color: transparent !important;
+            transform: skewX(17deg) translateZ(0); /* Force GPU rendering */
+        }
+
+        /* Elimina cualquier blur en contenedores padres */
+        .skew-container-b,
+        .bg-dark-form,
+        .clip-form {
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+            filter: none !important;
+        }
+
+        /* Asegura que los placeholders sean visibles */
+        .skew-container-b input::placeholder {
+            opacity: 0.7 !important;
+            color: #9CA3AF !important;
+        }
+
+        /* ===== RESPONSIVIDAD FUNCIONAL ===== */
+
+        /* 1. Portátil (1024px - 1279px) - Ajuste suave */
+        @media (max-width: 1279px) and (min-width: 1024px) {
+            .grid-cols-\[650px_400px_270px\] {
+                grid-template-columns: 550px 350px 220px !important;
+            }
+            .h-\[400px\] {
+                height: 380px !important;
+            }
+            .ml-\[-110px\] {
+                margin-left: -90px !important;
+            }
+            .ml-\[-210px\] {
+                margin-left: -160px !important;
+            }
+            .skew-container-b input {
+                padding-left: 50px !important;
+            }
+        }
+
+        /* 2. Tablet (768px - 1023px) - Diseño adaptado */
+        @media (max-width: 1023px) and (min-width: 768px) {
+            section {
+                display: flex !important;
+                flex-direction: column !important;
+                height: auto !important;
+                padding: 2rem !important;
+                gap: 2rem !important;
+            }
+            
+            .clip-moto {
+                clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%) !important;
+                height: 300px !important;
+                order: 1;
+            }
+            
+            .clip-form {
+                clip-path: polygon(0 10%, 100% 0, 100% 90%, 0 100%) !important;
+                margin-left: 0 !important;
+                width: 100% !important;
+                order: 3;
+                margin-top: -30px !important;
+            }
+            
+            .skew-container-b {
+                transform: skewX(-10deg) !important;
+            }
+            
+            .skew-content-b {
+                transform: skewX(10deg) !important;
+                padding-left: 30px !important;
+            }
+            
+            .skew-container-b input {
+                transform: skewX(10deg) !important;
+                padding-left: 30px !important;
+            }
+            
+            .col-span-1.flex.flex-col {
+                flex-direction: row !important;
+                gap: 1.5rem !important;
+                margin-left: 0 !important;
+                order: 2;
+            }
+            
+            button[type="submit"] {
+                left: 50% !important;
+                transform: translateX(-50%) !important;
+                bottom: -20px !important;
+            }
+        }
+
+        /* 3. Móvil (≤767px) - Diseño limpio */
+        @media (max-width: 767px) {
+            section {
+                display: flex !important;
+                flex-direction: column !important;
+                height: auto !important;
+                padding: 1.5rem !important;
+                gap: 1.5rem !important;
+            }
+            
+            .clip-moto, .clip-form, .clip-product {
+                clip-path: none !important;
+                border-radius: 0.75rem !important;
+            }
+            
+            .skew-container-b, .skew-content-b,
+            .skew-c, .skew-content-c,
+            .skew-d, .skew-content-d {
+                transform: none !important;
+            }
+            
+            .skew-container-b input {
+                transform: none !important;
+                padding-left: 0.5rem !important;
+                padding: 0.75rem 0.5rem !important;
+                margin: 0.25rem 0 !important;
+                font-size: 16px !important;
+            }
+            
+            .ml-\[-110px\], .ml-\[-210px\], .ml-\[-10px\] {
+                margin-left: 0 !important;
+            }
+            
+            .col-span-1.flex.flex-col {
+                flex-direction: column !important;
+                gap: 1.5rem !important;
+            }
+            
+            button[type="submit"] {
+                left: 50% !important;
+                transform: translateX(-50%) !important;
+                bottom: auto !important;
+                margin: 1.5rem auto !important;
+                width: 60px !important;
+                height: 60px !important;
+            }
+        }
+        
     </style>
 </head>
