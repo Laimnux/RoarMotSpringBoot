@@ -23,10 +23,9 @@ public class WebConfig2 implements WebMvcConfigurer {
         registry.addResourceHandler("/products/**")  // ← Comillas cerradas
                 .addResourceLocations("file:" + uploadDir + "/products/");  // ← Sin #
 
-        // 3. Motos (RUTA ABSOLUTA)
-        String rutaMotos = "file:C:/Users/USUARIO/Documents/roarmot/data/uploads/motos/";
-        registry.addResourceHandler("/motos/**")
-                .addResourceLocations(rutaMotos);
+        // 3. Motos RutaDinámica...
+        registry.addResourceHandler("/motos/**") 
+        .addResourceLocations("file:" + uploadDir + "/motos/"); //  Ruta dinámica
 
         // 4. Perfiles - CORREGIDO
         registry.addResourceHandler("/perfiles/**")

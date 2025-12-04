@@ -5,7 +5,11 @@ import com.roarmot.roarmot.models.Moto;
 import com.roarmot.roarmot.models.Usuario;
 import com.roarmot.roarmot.repositories.MotoRepository;
 import com.roarmot.roarmot.repositories.UsuarioRepository;
+
+import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +32,9 @@ public class MotoService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Value("${file.upload-dir}")
+    private String baseUploadDir;
 
     // Crear nueva moto para un usuario
     public MotoDTO crearMoto(MotoDTO motoDTO, Long usuarioId) {
@@ -154,10 +161,14 @@ public class MotoService {
         String extension = nombreOriginal.substring(nombreOriginal.lastIndexOf("."));
         String nuevoNombre = "moto_" + usuarioId + "_" + System.currentTimeMillis() + extension;
         
-        // 4. Ruta donde guardar (usa data/uploads/motos/)
-        String uploadDir = "data/uploads/motos/";
-        Path uploadPath = Paths.get(uploadDir);
+
+        // 4. Ruta donde guardar (usa data/uploads/motos)
+        String subDirMotos = "motos";
+        //Construimos la ruta completa (EJ: data/uploads/motos)
+        String rutaCompleta = baseUploadDir + "/" + subDirMotos;
         
+        Path uploadPath = Paths.get(rutaCompleta);
+
         // 5. Crear directorio si no existe
         if (!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
@@ -173,7 +184,7 @@ public class MotoService {
         System.out.println("🔍 [SERVICE] Tamaño del archivo: " + Files.size(filePath) + " bytes");
         
         // 7. Retornar nombre del archivo (la entidad Moto guardará la ruta completa)
-        return "/motos/" + nuevoNombre; // IMPORTANTE: Así quedará en la BD
+        return "/" + subDirMotos + "/" + nuevoNombre; // IMPORTANTE: Así quedará en la BD
 
         
     }
