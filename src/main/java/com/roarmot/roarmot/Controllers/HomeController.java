@@ -24,8 +24,15 @@ import java.util.Optional;
 import java.util.UUID;
 import java.lang.StringBuilder;
 
+import com.roarmot.roarmot.Services.MotoService;
+import com.roarmot.roarmot.dto.MotoDTO;
+import java.util.List;
+
 @Controller
 public class HomeController {
+
+    // Agrega esta variable:
+    private final MotoService motoService;
 
     // Define la constante para el directorio de subida de imágenes de perfil.
     // Es una buena práctica usar una constante para evitar errores de escritura y facilitar la modificación.
@@ -36,10 +43,13 @@ public class HomeController {
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
 
+    
+
     // Constructor para inyectar las dependencias de UsuarioRepository y PasswordEncoder.
-    public HomeController(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
+    public HomeController(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder, MotoService motoService) {
         this.usuarioRepository = usuarioRepository;
         this.passwordEncoder = passwordEncoder;
+         this.motoService = motoService;
     }
 
     // Maneja la solicitud GET para la ruta principal /.
@@ -89,6 +99,29 @@ public class HomeController {
             
             // Y agrega esta variable al modelo para que la vista la pueda usar
             model.addAttribute("rol_nombre", rolSinPrefijo);
+
+             // --- NUEVO CÓDIGO: Obtener moto del usuario ---
+            try {
+                // 1. Obtener motos SOLO de este usuario
+                List<MotoDTO> motos = motoService.obtenerMotosPorUsuario(usuario.getIdUsuario());
+                
+                // 2. Si tiene motos, tomar la primera (normalmente 1 por usuario)
+                MotoDTO motoUsuario = null;
+                if (motos != null && !motos.isEmpty()) {
+                    motoUsuario = motos.get(0);
+                    System.out.println("Moto encontrada para " + username + ": " + motoUsuario.getPlacaMoto());
+                } else {
+                    System.out.println("Usuario " + username + " no tiene motos registradas");
+                }
+                
+                // 3. Pasar a la vista (IMPORTANTE)
+                model.addAttribute("motoDelUsuario", motoUsuario);
+                
+            } catch (Exception e) {
+                System.err.println("Error al obtener moto: " + e.getMessage());
+                model.addAttribute("motoDelUsuario", null);
+            }
+            // --- FIN DEL NUEVO CÓDIGO ---
             return "dashboard";
         }
         

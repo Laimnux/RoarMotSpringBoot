@@ -68,15 +68,29 @@ public class MotoController {
 
     // Obtener todas las motos del usuario autenticado
     @GetMapping
-    public ResponseEntity<?> obtenerMotosDelUsuario(HttpServletRequest request) {
+    public ResponseEntity<?> obtenerMotosDelUsuario(Authentication authentication) {
         try {
-            Long usuarioId = obtenerUsuarioIdAutenticado(request);
+            // 1. Obtenemos usuario autenticado
+            Usuario usuarioActual = getAuthenticatedUser(authentication);
+            Long usuarioId = usuarioActual.getIdUsuario();
+            
+            System.out.println("Obteniendo motos para usuario ID: " + usuarioId);
+
+            // 2. Obtenemos motos solo de Este usuario    
             List<MotoDTO> motos = motoService.obtenerMotosPorUsuario(usuarioId);
+
+            System.out.println("Total motos encontradas: " + motos.size());
+            if (!motos.isEmpty()) {
+                System.out.println("Primera moto: " + motos.get(0).getPlacaMoto());
+            }
+
             return ResponseEntity.ok(motos);
             
         } catch (RuntimeException e) {
+             System.err.println("Error al obtener motos: " + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
+            System.err.println("Error interno: " + e.getMessage());
             return ResponseEntity.internalServerError().body("Error interno del servidor");
         }
     }

@@ -28,7 +28,7 @@
 
     <div class="flex flex-1">
         <div class="flex-1 overflow-x-hidden overflow-y-auto">
-            <main th:replace="fragmentos/dashboardContent :: content"></main>
+            <main th:replace="fragmentos/dashboardContent :: content(motoDelUsuario=${motoDelUsuario},usuario=${usuario})"></main>
         </div>
         
     </div>
