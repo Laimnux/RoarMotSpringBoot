@@ -1,171 +1,266 @@
-<th:block th:fragment="content">
-    <div th:if="${successMessage}" class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-2 sm:px-6 sm:py-3 rounded text-sm sm:text-base">
-        <p th:text="${successMessage}"></p>
+<div th:fragment="content" class="max-w-4xl mx-auto bg-white p-8 rounded-xl shadow-2xl border border-gray-200">
+    <!-- NOTA: Los scripts y estilos necesarios para el fragmento se deben incluir en el head del master (panelVendedor) -->
+
+    <!-- Título con el color #00DB9D -->
+    <h1 class="text-3xl font-bold text-custom-green mb-6 text-center">Registro de Nuevo Producto</h1>
+    <p class="text-sm text-gray-500 text-center mb-8">Completa los datos estrictos requeridos por el modelo de inventario.</p>
+
+    <!-- Mensajes de Éxito/Error (Si estás usando redirectAttributes) -->
+    <div th:if="${successMessage}" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+        <span class="block sm:inline" th:text="${successMessage}"></span>
     </div>
-    <div th:if="${errorMessage}" class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-2 sm:px-6 sm:py-3 rounded text-sm sm:text-base">
-        <p th:text="${errorMessage}"></p>
+    <div th:if="${errorMessage}" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+        <span class="block sm:inline" th:text="${errorMessage}"></span>
     </div>
-    
-    <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 mb-6">Producto nuevo</h1>
 
-    <form th:action="@{/panel/ProductProcess}" method="POST" enctype="multipart/form-data" class="flex flex-col md:flex-row gap-6" onsubmit="return validarFormulario()">
-        <div class="bg-white p-6 sm:p-8 rounded-lg shadow w-full md:flex-1">
-            <h2 class="text-base sm:text-lg font-semibold text-pink-600 mb-4">Datos generales</h2>
+    <!-- 
+        CORRECCIÓN CLAVE: th:object="${productoForm}"
+        El 'action' ya estaba correcto.
+    -->
+    <form id="productForm" th:object="${productoForm}" th:action="@{/panel/ProductProcess}" method="post" enctype="multipart/form-data" class="space-y-6">
 
-            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 mb-6">
-                <label class="flex items-center gap-2 text-sm sm:text-base">
-                    <input type="radio" name="tipo" value="producto" class="accent-pink-600 w-4 h-4" checked />
-                    <span>Un producto</span>
-                </label>
-                <label class="flex items-center gap-2 text-sm sm:text-base">
-                    <input type="radio" name="tipo" value="combo" class="accent-pink-600 w-4 h-4" />
-                    <span>En combo</span>
-                </label>
-                <label class="flex items-center gap-2 text-sm sm:text-base">
-                    <input type="radio" name="tipo" value="servicio" class="accent-pink-600 w-4 h-4" />
-                    <span>Servicio</span>
-                </label>
+        <!--INCLUSIÓN DEL TOKEN CSRF REQUERIDO POR SPRING SECURITY  -->
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+        
+        <!-- SECCIÓN 1: IDENTIFICACIÓN BÁSICA Y PRECIO -->
+        <div class="p-6 bg-custom-light-green rounded-lg border border-custom-medium-green">
+            <h2 class="text-xl font-semibold text-gray-700 mb-4 border-b pb-2 border-custom-medium-green">Datos Principales</h2>
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Nombre -->
+                <div>
+                    <label for="nombre" class="block text-sm font-medium text-gray-700 mb-1">Nombre del Producto</label>
+                    <!-- CORRECCIÓN: th:field="*{nombre}" -->
+                    <input type="text" th:field="*{nombre}" id="nombre" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus-ring-custom-green transition duration-200" placeholder="Ej: Casco Integral V2" required>
+                    <span th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}" class="text-xs text-red-500 mt-1 block"></span>
+                </div>
+                <!-- Marca -->
+                <div>
+                    <label for="marca" class="block text-sm font-medium text-gray-700 mb-1">Marca</label>
+                    <!-- CORRECCIÓN: th:field="*{marca}" -->
+                    <input type="text" th:field="*{marca}" id="marca" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus-ring-custom-green transition duration-200" placeholder="Ej: MotoPro" required>
+                    <span th:if="${#fields.hasErrors('marca')}" th:errors="*{marca}" class="text-xs text-red-500 mt-1 block"></span>
+                </div>
+                <!-- Precio -->
+                <div>
+                    <label for="precio" class="block text-sm font-medium text-gray-700 mb-1">Precio ($)</label>
+                    <!-- CORRECCIÓN: th:field="*{precio}" -->
+                    <input type="number" th:field="*{precio}" id="precio" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus-ring-custom-green transition duration-200" placeholder="Ej: 150.99" step="0.01" required>
+                    <span th:if="${#fields.hasErrors('precio')}" th:errors="*{precio}" class="text-xs text-red-500 mt-1 block"></span>
+                </div>
             </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-                <input type="text" name="nombre" placeholder="Nombre del producto *" required class="p-2 sm:p-3 border rounded border-gray-300 focus:ring-2 focus:ring-pink-600 text-gray-800 text-sm sm:text-base">
-                <input type="text" name="marca" placeholder="Marca *" required class="p-2 sm:p-3 border rounded border-gray-300 focus:ring-2 focus:ring-pink-600 text-gray-800 text-sm sm:text-base">
-                <select name="Talla" required class="p-2 sm:p-3 border rounded border-gray-300 focus:ring-2 focus:ring-pink-600 text-gray-800 text-sm sm:text-base">
-                    <option value="S">S</option>
-                    <option value="M">M</option>
-                    <option value="L">L</option>
-                    <option value="XL">XL</option>
-                    <option value="XS">XS</option>
-                    <option value="No aplica">No aplica</option>
-                </select>
-                <input type="number" name="cantidad" placeholder="Cantidad *" required class="p-2 sm:p-3 border rounded border-gray-300 focus:ring-2 focus:ring-pink-600 text-gray-800 text-sm sm:text-base">
-                <input type="text" name="lote" placeholder="Lote" class="p-2 sm:p-3 border rounded border-gray-300 focus:ring-2 focus:ring-pink-600 text-gray-800 text-sm sm:text-base">
-                <input type="number" name="precio_venta" placeholder="Precio de venta *" required class="p-2 sm:p-3 border rounded border-gray-300 focus:ring-2 focus:ring-pink-600 text-gray-800 text-sm sm:text-base">
-            </div>
-
-            <textarea name="descripcion" placeholder="Descripción del producto" rows="3" class="w-full mb-6 p-2 sm:p-3 border border-gray-300 rounded focus:ring-2 focus:ring-pink-600 text-gray-800 text-sm sm:text-base"></textarea>
-
-            <h2 class="text-base sm:text-lg font-semibold text-pink-600 mb-2">Inventario</h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-                <select name="categoria" required class="p-2 sm:p-3 border rounded border-gray-300 focus:ring-2 focus:ring-pink-600 text-gray-800 text-sm sm:text-base">
-                    <option value="">Categoría *</option>
-                    <option value="casco">Cascos</option>
-                    <option value="guantes">Guantes</option>
-                    <option value="chaquetas">Chaquetas</option>
-                </select>
-                <select name="subcategoria" required class="p-2 sm:p-3 border rounded border-gray-300 focus:ring-2 focus:ring-pink-600 text-gray-800 text-sm sm:text-base">
-                    <option value="">Subcategoría *</option>
-                    <option value="integral">Integral</option>
-                    <option value="modular">Modular</option>
-                    <option value="abierto">Abierto</option>
-                </select>
+            <!-- Descripción -->
+            <div class="mt-6">
+                <label for="descripcion" class="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
+                <!-- CORRECCIÓN: th:field="*{descripcion}" -->
+                <textarea th:field="*{descripcion}" id="descripcion" rows="3" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus-ring-custom-green transition duration-200" placeholder="Descripción detallada del material, uso y características..." required></textarea>
+                <span th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}" class="text-xs text-red-500 mt-1 block"></span>
             </div>
         </div>
 
-        <div class="w-full md:w-80 flex flex-col gap-4 flex-shrink-0">
-            <div class="bg-white p-6 sm:p-8 rounded-lg shadow flex-1 flex flex-col justify-between">
-                <label for="imagen" class="w-full h-48 sm:h-56 border border-dashed border-gray-400 flex flex-col items-center justify-center cursor-pointer text-gray-500 hover:text-pink-600 text-center text-sm sm:text-base mb-2">
-                    <span class="text-3xl sm:text-4xl mb-2">+</span>
-                    <span>Sube las fotos del producto</span>
-                    <input type="file" name="imagen[]" id="imagen" class="hidden" accept="image/*" multiple onchange="previewImagenes(event)" required>
-                </label>
-                <div id="preview" class="grid grid-cols-4 gap-2 mt-4"></div>
+        <!-- SECCIÓN 2: INVENTARIO Y CLASIFICACIÓN -->
+        <div class="p-6 bg-white rounded-lg border border-gray-300">
+            <h2 class="text-xl font-semibold text-gray-700 mb-4 border-b pb-2 border-gray-300">Inventario y Clasificación</h2>
+            
+            <!-- Cantidad, Lote, Talla -->
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Cantidad (Stock) -->
+                <div>
+                    <label for="stock" class="block text-sm font-medium text-gray-700 mb-1">Cantidad (Stock)</label>
+                    <!-- CORRECCIÓN: th:field="*{stock}" -->
+                    <input type="number" th:field="*{stock}" id="stock" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus-ring-custom-green transition duration-200" placeholder="Ej: 100" required>
+                    <span th:if="${#fields.hasErrors('stock')}" th:errors="*{stock}" class="text-xs text-red-500 mt-1 block"></span>
+                </div>
+                <!-- Lote -->
+                <div>
+                    <label for="lote" class="block text-sm font-medium text-gray-700 mb-1">Lote / SKU</label>
+                    <!-- CORRECCIÓN: th:field="*{sku}" -->
+                    <input type="text" th:field="*{lote}" id="lote" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus-ring-custom-green transition duration-200" placeholder="Ej: LOTE-2025-A" required>
+                    <span th:if="${#fields.hasErrors('lote')}" th:errors="*{lote}" class="text-xs text-red-500 mt-1 block"></span>
+                </div>
+                <!-- Talla (Enum) -->
+                <div>
+                    <label for="talla" class="block text-sm font-medium text-gray-700 mb-1">Talla</label>
+                    <!-- CORRECCIÓN: th:field="*{talla}" -->
+                    <select th:field="*{talla}" id="talla" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus-ring-custom-green transition duration-200" required>
+                        <option value="" disabled selected>Selecciona una talla</option>
+                        <!-- Los valores del enum se mapean directamente -->
+                        <option value="S">S (Small)</option>
+                        <option value="M">M (Medium)</option>
+                        <option value="L">L (Large)</option>
+                        <option value="XS">XS (Extra Small)</option>
+                        <option value="XL">XL (Extra Large)</option>
+                        <option value="NO_APLICA">No aplica</option>
+                    </select>
+                    <span th:if="${#fields.hasErrors('talla')}" th:errors="*{talla}" class="text-xs text-red-500 mt-1 block"></span>
+                </div>
             </div>
-            <button type="submit" class="w-full bg-black text-white py-2 sm:py-3 rounded hover:bg-pink-600 transition text-base sm:text-lg font-semibold">Guardar</button>
+
+            <!-- Categoría y Subcategoría (Relación ManyToOne) -->
+            <div class="grid md:grid-cols-2 gap-6 mt-6">
+                <!-- Categoría (Solo para visualización/filtrado si no está en el DTO) -->
+                <div>
+                    <label for="category_filter" class="block text-sm font-medium text-gray-700 mb-1">Categoría Principal</label>
+                    <!-- CORRECCIÓN: Usamos th:each para llenar opciones desde el modelo 'categorias' -->
+                    <select id="category_filter" name="category_filter" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus-ring-custom-green transition duration-200" required>
+                        <option value="" disabled selected>Selecciona una categoría</option>
+                        <option th:each="cat : ${categorias}" 
+                                th:value="${cat.id}" 
+                                th:text="${cat.nombre}">
+                            Categoría
+                        </option>
+                    </select>
+                    <!-- NOTA: Si necesitas validar la categoría, debe ir en el DTO como 'idCategoria' y usar th:field -->
+                </div>
+                <!-- Subcategoría (ID_SUBCATEGORIA) -->
+                <div id="subCategoryContainer">
+                    <label for="idSubcategoria" class="block text-sm font-medium text-gray-700 mb-1">Subcategoría (ID_SUBCATEGORIA)</label>
+                    <!-- CORRECCIÓN: th:field="*{idSubcategoria}" -->
+                    <select th:field="*{idSubcategoria}" id="idSubcategoria" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus-ring-custom-green transition duration-200" required>
+                        <option value="" disabled selected>Selecciona Subcategoría</option>
+                        <!-- CORRECCIÓN: th:each para llenar opciones desde el modelo 'subcategorias' -->
+                        <option th:each="subcat : ${subcategorias}" 
+                                th:value="${subcat.id}" 
+                                th:text="${subcat.nombre}">
+                            Subcategoría
+                        </option>
+                    </select>
+                    <span th:if="${#fields.hasErrors('idSubcategoria')}" th:errors="*{idSubcategoria}" class="text-xs text-red-500 mt-1 block"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 3: IMAGEN (Acepta la subida de un archivo) -->
+        <div class="p-6 bg-white rounded-lg border border-gray-300">
+             <h2 class="text-xl font-semibold text-gray-700 mb-4 border-b pb-2 border-gray-300">Carga de Imagen Principal</h2>
+             <div>
+                 <!-- CORRECCIÓN: 'name="imagen"' para el MultipartFile -->
+                 <label for="imagen" class="block text-sm font-medium text-gray-700 mb-1">Sube la foto principal del producto</label>
+                 <input type="file" id="imagen" name="imagen" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-custom-light-green file:text-custom-green hover:file:bg-green-100 cursor-pointer" onchange="previewImage(event)" required>
+                 
+                 <div class="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                      <p class="text-xs text-gray-500 mb-2">Previsualización de la Imagen</p>
+                      <div id="image-preview" class="w-full h-48 bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden">
+                          <img id="preview-img" src="https://placehold.co/400x300/e5e7eb/374151?text=Sin+Imagen" alt="Previsualización de la imagen cargada" class="w-full h-full object-cover">
+                      </div>
+                 </div>
+             </div>
+        </div>
+
+        <!-- Botones de Acción -->
+        <div class="flex justify-end space-x-4 pt-4">
+            <button type="button" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition duration-200">Cancelar</button>
+            <button type="submit" class="btn-submit px-6 py-3 text-white rounded-lg font-medium shadow-lg shadow-custom-green/50">Guardar Producto</button>
         </div>
     </form>
+</div>
 
-    <script>
-        function mostrarMensaje(mensaje, tipo) {
-            const existingMessage = document.querySelector('.temp-message-container');
-            if (existingMessage) {
-                existingMessage.remove();
+<style>
+/* Colores personalizados de tu tema */
+.text-custom-green { color: #00DB9D; }
+.bg-custom-light-green { background-color: #CDFFEA; }
+.border-custom-medium-green { border-color: #99E9C3; }
+.focus-ring-custom-green:focus { --tw-ring-color: #00DB9D; }
+.btn-submit { background-color: #00DB9D; }
+.btn-submit:hover { background-color: #00c08b; }
+</style>
+
+<script>
+// Función básica de previsualización de imagen
+function previewImage(event) {
+    const reader = new FileReader();
+    reader.onload = function(){
+        const output = document.getElementById('preview-img');
+        output.src = reader.result;
+    };
+    reader.readAsDataURL(event.target.files[0]);
+}
+</script>
+
+<!-- Script del fragmento (se sugiere moverlo a un archivo .js o insertarlo en el master si el fragmento se reutiliza mucho) -->
+    <script th:inline="javascript">
+        
+        // ... Lógica de window.onload para asegurar que setupProductForm se ejecute al final ...
+        if (typeof window.onload === 'function') {
+             const originalOnload = window.onload;
+             window.onload = function() {
+                 originalOnload();
+                 setupProductForm();
+             };
+         } else {
+             window.onload = setupProductForm;
+         }
+
+        function setupProductForm() {
+            // 2. CORRECCIÓN DE IDs: Usar los IDs reales del HTML: 'category_filter' y 'idSubcategoria'
+            const categorySelect = document.getElementById('category_filter'); // <-- CORREGIDO
+            const subCategorySelect = document.getElementById('idSubcategoria'); // <-- CORREGIDO
+            const previewImg = document.getElementById('preview-img');
+
+            // Verifica que los elementos existen antes de añadir listeners
+            if (!categorySelect || !subCategorySelect) {
+                console.error("Error JS: No se encontraron los elementos SELECT de Categoría o Subcategoría. Revise los IDs en el HTML.");
+                // Detiene la ejecución de la función si los elementos no están
+                return; 
             }
-
-            const container = document.createElement('div');
-            let bgColor, borderColor, textColor;
-            // ... (resto de la lógica de mostrarMensaje) ...
-            switch (tipo) {
-                case 'success':
-                    bgColor = 'bg-green-100';
-                    borderColor = 'border-green-400';
-                    textColor = 'text-green-700';
-                    break;
-                case 'error':
-                    bgColor = 'bg-red-100';
-                    borderColor = 'border-red-400';
-                    textColor = 'text-red-700';
-                    break;
-                case 'warning':
-                    bgColor = 'bg-yellow-100';
-                    borderColor = 'border-yellow-400';
-                    textColor = 'text-yellow-700';
-                    break;
-                default:
-                    bgColor = 'bg-blue-100';
-                    borderColor = 'border-blue-400';
-                    textColor = 'text-blue-700';
-            }
-
-            container.className = `temp-message-container fixed top-4 left-1/2 -translate-x-1/2 p-4 rounded-lg shadow-lg z-[1000] ${bgColor} ${borderColor} ${textColor} border w-11/12 sm:max-w-md`;
-            container.innerHTML = `<p>${mensaje}</p>`;
-            document.body.appendChild(container);
-
-            setTimeout(() => {
-                container.remove();
-            }, 3000);
-        }
-
-        function validarFormulario() {
-            const nombre = document.querySelector('[name="nombre"]').value.trim();
-            const marca = document.querySelector('[name="marca"]').value.trim();
-            const cantidad = document.querySelector('[name="cantidad"]').value.trim();
-            const precio = document.querySelector('[name="precio_venta"]').value.trim();
-            const categoria = document.querySelector('[name="categoria"]').value;
-            const subcategoria = document.querySelector('[name="subcategoria"]').value;
-            const imagenes = document.querySelector('[name="imagen[]"]').files;
-
-            if (!nombre || !marca || !cantidad || !precio || !categoria || !subcategoria) {
-                mostrarMensaje("Por favor, completa todos los campos obligatorios.", 'error');
-                return false;
-            }
-
-            if (isNaN(cantidad) || parseInt(cantidad) < 0) {
-                mostrarMensaje("La cantidad debe ser un número entero no negativo.", 'error');
-                return false;
-            }
-            if (isNaN(precio) || parseFloat(precio) <= 0) {
-                mostrarMensaje("El precio debe ser un número mayor que cero.", 'error');
-                return false;
-            }
-
-            if (imagenes.length === 0) {
-                mostrarMensaje(" Debes seleccionar al menos una imagen.", 'warning');
-                return false;
-            }
-
-            return true;
-        }
-
-        function previewImagenes(event) {
-            const preview = document.getElementById('preview');
-            preview.innerHTML = '';
             
-            if (event.target.files.length === 0) {
-                preview.innerHTML = '';
-                return;
-            }
+            // Simulación de datos de categorías y subcategorías (Deberían ser cargados desde Spring en el modelo)
+            /*const categoriesData = {
+                // NOTA: Los valores aquí deben coincidir con los th:value en el HTML si usas JS para filtrar.
+                // Si usas Thymeleaf para precargar, puedes ignorar esta data simulada.
+                '1': [ // Asumiendo que el ID 1 es Motos
+                    { id: 101, name: 'Deportivas' },
+                    { id: 102, name: 'Cruiser' }
+                ],
+                '2': [ // Asumiendo que el ID 2 es Accesorios
+                    { id: 201, name: 'Cascos' },
+                    { id: 202, name: 'Guantes' }
+                ]
+                // ... y así sucesivamente
+            };*/
 
-            Array.from(event.target.files).forEach(file => {
+            // Lógica para poblar subcategorías
+            categorySelect.addEventListener('change', (e) => {
+                const selectedCategoryId = e.target.value; // ID de la Categoría seleccionada
+                const subcategories = categoriesData[selectedCategoryId] || [];
+                
+                // Limpiar y resetear el select de subcategorías
+                subCategorySelect.innerHTML = '<option value="" disabled selected>Selecciona Subcategoría</option>';
+                
+                if (subcategories.length > 0) {
+                    subcategories.forEach(sub => {
+                        const option = document.createElement('option');
+                        option.value = sub.id; 
+                        option.textContent = sub.name;
+                        subCategorySelect.appendChild(option);
+                    });
+                }
+            });
+
+            // Función para la previsualización de la imagen
+            window.previewImage = function(event) {
+                const file = event.target.files[0];
+                if (!file) {
+                    previewImg.src = "https://placehold.co/400x300/e5e7eb/374151?text=Sin+Imagen";
+                    return;
+                }
+
                 const reader = new FileReader();
-                reader.onload = e => {
-                    const img = document.createElement('img');
-                    img.src = e.target.result;
-                    img.className = 'w-full h-auto object-cover rounded aspect-square';
-                    preview.appendChild(img);
+                reader.onload = (e) => {
+                    previewImg.src = e.target.result;
                 };
                 reader.readAsDataURL(file);
-            });
+            };
+
+            // Simulación del manejo del envío
+            // NOTA: Este preventDefault debe ser eliminado para que el formulario se envíe realmente al Controller
+            // Lo dejo activo para la depuración
+            const productForm = document.getElementById('productForm');
+            if (productForm) {
+                productForm.addEventListener('submit', (e) => {
+                    // Si quieres que el formulario se envíe, COMENTA O ELIMINA LA LÍNEA DE ABAJO
+                    console.log('Formulario de producto interceptado en JS. Si ya probaste la BD, quita e.preventDefault()');
+    
+                });
+            }  
         }
     </script>
-</th:block>

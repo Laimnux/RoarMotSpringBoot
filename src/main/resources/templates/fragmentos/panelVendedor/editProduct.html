@@ -1,52 +1,93 @@
-<div class="container mx-auto p-4 sm:p-6 md:p-8" th:fragment="editProduct">
+<div class="container mx-auto p-4 sm:p-6 md:p-8" th:fragment="content">
     <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-200 mb-6">Editar o eliminar productos</h1>
 
     <!-- Mensajes de éxito y error de Spring/Thymeleaf -->
     <div th:if="${successMessage}" class="bg-green-100 text-green-700 px-4 py-2 sm:px-6 sm:py-3 mb-4 border border-green-400 rounded text-sm sm:text-base" th:text="${successMessage}"></div>
     <div th:if="${errorMessage}" class="bg-red-100 text-red-700 px-4 py-2 sm:px-6 sm:py-3 mb-4 border border-red-400 rounded text-sm sm:text-base" th:text="${errorMessage}"></div>
     
+    <!--BARRA DE BUSQUEDA-->
+    <div class="mb-4 flex justify-end">
+        <form th:action="@{/panel/productos/buscar}" method="get" class="flex items-center space-x-2">
+            <input type="text" 
+                name="keyword" 
+                th:value="${keyword}" 
+                placeholder="Buscar por nombre..." 
+                class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 w-64 text-gray-700"/>
+            
+            <button type="submit" 
+                    class="bg-pink-600 text-white px-4 py-2 rounded-md hover:bg-pink-700 transition duration-150">
+                <i class="fas fa-search"></i> Buscar
+            </button>
+            
+            <a th:href="@{/productos}" 
+            class="bg-gray-400 text-white px-4 py-2 rounded-md hover:bg-gray-500 transition duration-150">
+            Limpiar
+            </a>
+        </form>
+    </div>
+
     <div class="overflow-x-auto bg-white p-4 sm:p-6 md:p-8 rounded-lg shadow-lg">
         <div class="min-w-[900px]">
             <table class="w-full text-left border border-gray-200 rounded-lg overflow-hidden">
                 <thead class="bg-pink-600 text-white">
                     <tr>
+                        <!-- 1. COLUMNAS DE LA TABLA -->
+                        <th class="p-2 sm:p-3 text-sm sm:text-base">Imagen</th>
                         <th class="p-2 sm:p-3 text-sm sm:text-base">Nombre</th>
                         <th class="p-2 sm:p-3 text-sm sm:text-base">Marca</th>
                         <th class="p-2 sm:p-3 text-sm sm:text-base">Cantidad</th>
-                        <th class="p-2 sm:p-3 text-sm sm:text-base">Precio</th>
+                        <th class="p-2 sm:p-3 text-sm sm:text-base">Precio Venta</th>
                         <th class="p-2 sm:p-3 text-sm sm:text-base">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     <th:block th:if="${!productos.isEmpty()}">
-                        <tr th:each="producto : ${productos}" class="border-b border-gray-200 hover:bg-gray-100" th:data-product-id="${producto.ID}">
+                        <tr th:each="producto : ${productos}" class="border-b border-gray-200 hover:bg-gray-100" th:data-product-id="${producto.id}" th:id="'product-row-' + ${producto.id}">
+                            
+                            <!-- CELDA DE LA IMAGEN CON RUTA -->
                             <td class="p-2 sm:p-3">
-                                <input name="nombre" th:value="${producto.NOMBRE}" class="input-editable border border-gray-300 px-2 py-1 sm:px-3 sm:py-2 rounded w-full text-gray-800 bg-gray-100 cursor-not-allowed text-sm sm:text-base" readonly="true">
+                                <div class="flex-shrink-0 h-16 w-16">
+                                    <img class="h-full w-full object-cover rounded-lg" 
+                                            th:src="@{'/products/' + ${producto.imagen}}" 
+                                            alt="Imagen de Producto"
+                                            loading="lazy"
+                                    >
+                                </div>
+                            </td>
+                            
+                            <!-- CAMPOS EDITABLES -->
+                            <td class="p-2 sm:p-3">
+                                <input name="nombre" th:value="${producto.nombre}" class="input-editable border border-gray-300 px-2 py-1 sm:px-3 sm:py-2 rounded w-full text-gray-800 bg-gray-100 cursor-not-allowed text-sm sm:text-base" readonly="true">
                             </td>
                             <td class="p-2 sm:p-3">
-                                <input name="marca" th:value="${producto.MARCA}" class="input-editable border border-gray-300 px-2 py-1 sm:px-3 sm:py-2 rounded w-full text-gray-800 bg-gray-100 cursor-not-allowed text-sm sm:text-base" readonly="true">
+                                <input name="marca" th:value="${producto.marca}" class="input-editable border border-gray-300 px-2 py-1 sm:px-3 sm:py-2 rounded w-full text-gray-800 bg-gray-100 cursor-not-allowed text-sm sm:text-base" readonly="true">
                             </td>
                             <td class="p-2 sm:p-3">
-                                <input name="cantidad" type="number" th:value="${producto.CANTIDAD}" class="input-editable border border-gray-300 px-2 py-1 sm:px-3 sm:py-2 rounded w-full text-gray-800 bg-gray-100 cursor-not-allowed text-sm sm:text-base" readonly="true">
+                                <input name="cantidad" type="number" th:value="${producto.cantidad}" class="input-editable border border-gray-300 px-2 py-1 sm:px-3 sm:py-2 rounded w-full text-gray-800 bg-gray-100 cursor-not-allowed text-sm sm:text-base" readonly="true">
                             </td>
                             <td class="p-2 sm:p-3">
-                                <input name="precio_venta" type="number" step="0.01" th:value="${producto.PRECIO}" class="input-editable border border-gray-300 px-2 py-1 sm:px-3 sm:py-2 rounded w-full text-gray-800 bg-gray-100 cursor-not-allowed text-sm sm:text-base" readonly="true">
+                                <input name="precio" type="number" step="0.01" th:value="${producto.precio}" class="input-editable border border-gray-300 px-2 py-1 sm:px-3 sm:py-2 rounded w-full text-gray-800 bg-gray-100 cursor-not-allowed text-sm sm:text-base" readonly="true">
                             </td>
+                            
+                            <!-- BOTONES DE ACCIÓN -->
                             <td class="p-2 sm:p-3 flex flex-col sm:flex-row gap-2">
                                 <button type="button" class="btn-editar bg-yellow-400 hover:bg-yellow-500 px-3 py-1 sm:px-4 sm:py-2 rounded text-white text-xs sm:text-sm whitespace-nowrap">Editar</button>
                                 <button type="button" class="btn-guardar hidden bg-green-600 hover:bg-green-700 px-3 py-1 sm:px-4 sm:py-2 rounded text-white text-xs sm:text-sm whitespace-nowrap">Guardar</button>
                                 <button type="button" class="btn-cancelar hidden bg-gray-500 hover:bg-gray-600 px-3 py-1 sm:px-4 sm:py-2 rounded text-white text-xs sm:text-sm whitespace-nowrap">Cancelar</button>
                                 
-                                <form th:action="@{/vendedor/eliminarProducto}" method="post" onsubmit="return confirm('¿Estás seguro de eliminar este producto?')">
-                                    <input type="hidden" name="id" th:value="${producto.ID}">
-                                    <button type="submit" name="eliminar" class="bg-red-600 hover:bg-red-700 px-3 py-1 sm:px-4 sm:py-2 rounded text-white text-xs sm:text-sm w-full whitespace-nowrap">Eliminar</button>
-                                </form>
+                                <!-- Botón de eliminación, ahora manejado por JS (AJAX) -->
+                                <button type="button" 
+                                        class="btn-eliminar bg-red-600 hover:bg-red-700 px-3 py-1 sm:px-4 sm:py-2 rounded text-white text-xs sm:text-sm w-full whitespace-nowrap"
+                                        th:data-product-id="${producto.id}"
+                                        th:data-product-name="${producto.nombre}"
+                                >Eliminar</button>
+                                <!-- Se elimina el formulario innecesario, solo se usa el ID del botón -->
                             </td>
                         </tr>
                     </th:block>
                     <th:block th:unless="${!productos.isEmpty()}">
                         <tr>
-                            <td colspan="5" class="p-4 text-center text-gray-500 text-base sm:text-lg">No hay productos para mostrar.</td>
+                            <td colspan="6" class="p-4 text-center text-gray-500 text-base sm:text-lg">No hay productos para mostrar.</td>
                         </tr>
                     </th:block>
                 </tbody>
@@ -54,9 +95,10 @@
         </div>
     </div>
 
+    <!-- Sección de descarga de Excel, ajustando la URL con Thymeleaf -->
     <div class="my-6 text-gray-200">
         <h2 class="text-lg font-semibold text-gray-200 mb-3">Descargar productos agregados a Excel</h2>
-        <a th:href="@{/vendedor/descargarExcel}" 
+        <a th:href="@{/panel/generarReporteExcel}" 
             class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md inline-flex items-center transition-colors duration-200">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
@@ -66,7 +108,99 @@
     </div>
 
     <script>
-        // Lógica para el botón de 'Editar'
+        // Función para mostrar mensajes flotantes
+        function mostrarMensaje(mensaje, tipo) {
+            const existingMessage = document.querySelector('.temp-message-container');
+            if (existingMessage) {
+                existingMessage.remove();
+            }
+            const container = document.createElement('div');
+            let bgColor, borderColor, textColor;
+            switch (tipo) {
+                case 'success':
+                    bgColor = 'bg-green-100';
+                    borderColor = 'border-green-400';
+                    textColor = 'text-green-700';
+                    break;
+                case 'error':
+                    bgColor = 'bg-red-100';
+                    borderColor = 'border-red-400';
+                    textColor = 'text-red-700';
+                    break;
+                case 'info': 
+                    bgColor = 'bg-blue-100';
+                    borderColor = 'border-blue-400';
+                    textColor = 'text-blue-700';
+                    break;
+                default:
+                    bgColor = 'bg-blue-100';
+                    borderColor = 'border-blue-400';
+                    textColor = 'text-blue-700';
+            }
+            container.className = `temp-message-container fixed top-4 left-1/2 -translate-x-1/2 p-4 rounded-lg shadow-lg z-[1000] ${bgColor} ${borderColor} ${textColor} border w-11/12 sm:max-w-md`;
+            container.innerHTML = `<p>${mensaje}</p>`;
+            document.body.appendChild(container);
+            setTimeout(() => {
+                const currentMessage = document.querySelector('.temp-message-container');
+                if (currentMessage === container) {
+                    currentMessage.remove();
+                }
+            }, 3000);
+            return container; // Devuelve el contenedor para adjuntar eventos si es necesario
+        }
+
+        /**
+         * Función AJAX para la eliminación de un producto
+         * @param {string} productId - El ID del producto a eliminar
+         * @param {HTMLElement} row - La fila (tr) del producto
+         */
+        async function eliminarProductoAjax(productId, row) {
+            // 1. OBTENER EL TOKEN CSRF
+            const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+            const csrfHeaderName = document.querySelector('meta[name="_csrf_header"]').content;
+            
+            // Usamos un objeto simple para enviar el ID como JSON para un DELETE más RESTful
+            // o como FormData para simular una petición de formulario si el endpoint así lo requiere.
+            // Adoptaremos FormData por consistencia con el método de edición:
+            const formData = new FormData();
+            formData.append('idProducto', productId); 
+            // NOTA: Asumo que tu controlador espera 'idProducto' como nombre del parámetro
+            formData.append('_csrf', csrfToken); 
+
+            mostrarMensaje("Eliminando producto...", "info");
+
+            try {
+                // Modifica la URL para que apunte a tu método de eliminación por AJAX
+                const response = await fetch(`/panel/deleteProductAjax/${productId}`, { 
+                    method: 'DELETE', 
+                    body: formData,
+                });
+                
+                // Si el estado es 403, manejamos el error de seguridad.
+                if (response.status === 403) {
+                    mostrarMensaje("Error de seguridad: Solicitud prohibida. Recarga la página.", "error");
+                    return;
+                }
+
+                const result = await response.json(); 
+
+                if (response.ok && result.success) {
+                    mostrarMensaje(result.message || "Producto eliminado con éxito.", "success");
+                    // 2. ELIMINAR LA FILA DE LA TABLA
+                    row.remove();
+                } else {
+                    // Manejo de errores de validación o de backend
+                    const errorMessage = result.message || "Error al eliminar el producto.";
+                    mostrarMensaje(errorMessage, "error");
+                }
+            } catch (error) {
+                console.error("Fetch error:", error);
+                mostrarMensaje("Error de conexión al servidor. Intenta de nuevo.", "error");
+            }
+        }
+
+
+        // Lógica para el botón de 'Editar' (mantenida intacta)
         document.querySelectorAll(".btn-editar").forEach(boton => {
             boton.addEventListener("click", () => {
                 const fila = boton.closest("tr");
@@ -79,10 +213,11 @@
                     input.classList.add("bg-white", "focus:ring-2", "focus:ring-pink-600");
                 });
                 
+                // Guardar valores originales
                 fila.dataset.originalNombre = fila.querySelector("input[name='nombre']").value;
                 fila.dataset.originalMarca = fila.querySelector("input[name='marca']").value;
                 fila.dataset.originalCantidad = fila.querySelector("input[name='cantidad']").value;
-                fila.dataset.originalPrecioVenta = fila.querySelector("input[name='precio_venta']").value;
+                fila.dataset.originalPrecio = fila.querySelector("input[name='precio']").value; 
 
                 const btnGuardar = fila.querySelector(".btn-guardar");
                 const btnCancelar = fila.querySelector(".btn-cancelar");
@@ -92,17 +227,18 @@
             });
         });
 
-        // Lógica para el botón de 'Cancelar'
+        // Lógica para el botón de 'Cancelar' (mantenida intacta)
         document.querySelectorAll(".btn-cancelar").forEach(boton => {
             boton.addEventListener("click", () => {
                 const fila = boton.closest("tr"); 
                 if (!fila) {
                     return;
                 }
+                // Restaurar valores originales
                 fila.querySelector("input[name='nombre']").value = fila.dataset.originalNombre;
                 fila.querySelector("input[name='marca']").value = fila.dataset.originalMarca;
                 fila.querySelector("input[name='cantidad']").value = fila.dataset.originalCantidad;
-                fila.querySelector("input[name='precio_venta']").value = fila.dataset.originalPrecioVenta;
+                fila.querySelector("input[name='precio']").value = fila.dataset.originalPrecio; 
 
                 fila.querySelectorAll(".input-editable").forEach(input => {
                     input.setAttribute("readonly", true);
@@ -118,74 +254,54 @@
             });
         });
 
-        // Lógica para el botón de 'Guardar' (con AJAX)
+        // Lógica para el botón de 'Guardar' (AJAX) (mantenida intacta)
         document.querySelectorAll(".btn-guardar").forEach(boton => {
             boton.addEventListener("click", async () => {
                 const fila = boton.closest("tr");
                 if (!fila) {
                     return;
                 }
+                
+                // 1. OBTENER EL TOKEN CSRF
+                const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+                const csrfParameterName = document.querySelector('meta[name="_csrf_parameterName"]') ? document.querySelector('meta[name="_csrf_parameterName"]').content : '_csrf'; 
+                
+                // 2. OBTENER DATOS DE LA FILA
                 const productId = fila.dataset.productId;
                 const nombre = fila.querySelector("input[name='nombre']").value;
                 const marca = fila.querySelector("input[name='marca']").value;
                 const cantidad = fila.querySelector("input[name='cantidad']").value;
-                const precio_venta = fila.querySelector("input[name='precio_venta']").value;
+                const precio = fila.querySelector("input[name='precio']").value; 
                 
                 const formData = new FormData();
-                formData.append('id', productId);
+                
+                // 3. AÑADIR DATOS Y EL TOKEN CSRF AL FORM DATA
+                formData.append('idProducto', productId);
                 formData.append('nombre', nombre);
                 formData.append('marca', marca);
-                formData.append('cantidad', cantidad);
-                formData.append('precio_venta', precio_venta);
-
-                // Función para mostrar mensajes flotantes
-                function mostrarMensaje(mensaje, tipo) {
-                    const existingMessage = document.querySelector('.temp-message-container');
-                    if (existingMessage) {
-                        existingMessage.remove();
-                    }
-                    const container = document.createElement('div');
-                    let bgColor, borderColor, textColor;
-                    switch (tipo) {
-                        case 'success':
-                            bgColor = 'bg-green-100';
-                            borderColor = 'border-green-400';
-                            textColor = 'text-green-700';
-                            break;
-                        case 'error':
-                            bgColor = 'bg-red-100';
-                            borderColor = 'border-red-400';
-                            textColor = 'text-red-700';
-                            break;
-                        case 'info': 
-                            bgColor = 'bg-blue-100';
-                            borderColor = 'border-blue-400';
-                            textColor = 'text-blue-700';
-                            break;
-                        default:
-                            bgColor = 'bg-blue-100';
-                            borderColor = 'border-blue-400';
-                            textColor = 'text-blue-700';
-                    }
-                    container.className = `temp-message-container fixed top-4 left-1/2 -translate-x-1/2 p-4 rounded-lg shadow-lg z-[1000] ${bgColor} ${borderColor} ${textColor} border w-11/12 sm:max-w-md`;
-                    container.innerHTML = `<p>${mensaje}</p>`;
-                    document.body.appendChild(container);
-                    setTimeout(() => {
-                        container.remove();
-                    }, 3000);
-                }
-
+                formData.append('stock', cantidad); // Stock en el DTO se mapea a 'cantidad' aquí.
+                formData.append('precio', precio); 
+                formData.append(csrfParameterName, csrfToken); // AÑADIR TOKEN CSRF
+                
                 mostrarMensaje("Guardando cambios...", "info");
 
                 try {
-                    const response = await fetch("/vendedor/editarProducto", { // URL del controlador de Spring
+                    const response = await fetch("/panel/editarProductoAjax", {
                         method: 'POST',
                         body: formData
                     });
+                    
+                    if (response.status === 403) {
+                        mostrarMensaje("Error de seguridad: Solicitud prohibida. Intenta recargar la página.", "error");
+                        return;
+                    }
+
                     const result = await response.json(); 
 
                     if (response.ok && result.success) {
                         mostrarMensaje(result.message || "Producto actualizado con éxito.", "success");
+                        
+                        // Bloquear campos y ocultar botones de guardar/cancelar
                         fila.querySelectorAll(".input-editable").forEach(input => {
                             input.setAttribute("readonly", true);
                             input.classList.add("bg-gray-100", "cursor-not-allowed");
@@ -194,14 +310,72 @@
                         fila.querySelector(".btn-guardar").classList.add("hidden");
                         fila.querySelector(".btn-cancelar").classList.add("hidden");
                         fila.querySelector(".btn-editar").classList.remove("hidden");
+
+                        // Actualizar valores originales para el caso de Cancelar futuro
+                        fila.dataset.originalNombre = nombre;
+                        fila.dataset.originalMarca = marca;
+                        fila.dataset.originalCantidad = cantidad;
+                        fila.dataset.originalPrecio = precio; 
+
                     } else {
+                        // Manejo de errores de validación (400 Bad Request o errores de backend)
                         const errorMessage = result.errors ? Object.values(result.errors).join('<br>') : (result.message || "Error al actualizar el producto.");
                         mostrarMensaje(errorMessage, "error");
                     }
                 } catch (error) {
+                    console.error("Fetch error:", error);
                     mostrarMensaje("Error de conexión al servidor. Intenta de nuevo.", "error");
                 }
             });
         });
+
+        // Lógica para el botón de 'Eliminar' (implementando AJAX)
+        document.querySelectorAll(".btn-eliminar").forEach(boton => {
+            boton.addEventListener("click", (e) => {
+                e.preventDefault();
+                const productId = boton.dataset.productId;
+                const productName = boton.dataset.productName;
+                const fila = boton.closest("tr");
+
+                if (!productId || !fila) {
+                    mostrarMensaje("Error: No se encontró el ID del producto.", "error");
+                    return;
+                }
+                
+                // Muestra la caja de confirmación personalizada
+                const messageContainer = mostrarMensaje(
+                    `¿Estás seguro de **eliminar permanentemente** el producto **${productName}**?`, 
+                    'error'
+                );
+                
+                if (messageContainer) {
+                    messageContainer.innerHTML += `
+                        <div class="mt-4 flex gap-3 justify-end">
+                            <button id="cancel-delete" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white text-sm font-semibold rounded transition-colors duration-200">Cancelar</button>
+                            <button id="confirm-delete" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded transition-colors duration-200">Sí, Eliminar</button>
+                        </div>
+                    `;
+
+                    const confirmButton = document.getElementById('confirm-delete');
+                    const cancelButton = document.getElementById('cancel-delete');
+
+                    // 4. Se asigna la función AJAX al botón de confirmación
+                    if (confirmButton) {
+                        confirmButton.addEventListener('click', () => {
+                            messageContainer.remove();
+                            // Llamar a la función AJAX de eliminación
+                            eliminarProductoAjax(productId, fila); 
+                        });
+                    }
+
+                    if (cancelButton) {
+                        cancelButton.addEventListener('click', () => {
+                            messageContainer.remove();
+                        });
+                    }
+                }
+            });
+        });
+
     </script>
 </div>

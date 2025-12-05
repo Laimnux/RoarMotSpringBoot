@@ -2,11 +2,14 @@ package com.roarmot.roarmot.models;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import jakarta.persistence.Column;
+import java.util.ArrayList;
 
 import jakarta.persistence.*;
 
 import com.roarmot.roarmot.models.EstadoUsuario; // <-- Importar el nuevo Enum
+import com.roarmot.roarmot.models.Moto;
+import java.util.List; 
+
 
 @Entity // marcamos la clase como entidad JPA
 @Table(name = "usuario") // Mapea a nuestra tabla usuario en la DB
@@ -67,9 +70,21 @@ public class Usuario {
     @Column(name = "URL_IMAGEN_MOTO")
     private String urlImagenMoto;
     
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Moto> motos = new ArrayList<>();
+
+    // MÉTODOS HELPER - aquí van justo después de declarar la lista
+    public void agregarMoto(Moto moto) {
+        motos.add(moto);
+        moto.setUsuario(this);
+    }
+
+    public void removerMoto(Moto moto) {
+        motos.remove(moto);
+        moto.setUsuario(null);
+    }
 
     // CONTROLADORES 
-
     public Usuario(){
 
     }
@@ -197,6 +212,14 @@ public class Usuario {
 
     public void setUrlImagenMoto(String urlImagenMoto) {
         this.urlImagenMoto = urlImagenMoto;
+    }
+
+    public List<Moto> getMotos() {
+        return motos;
+    }
+
+    public void setMotos(List<Moto> motos) {
+        this.motos = motos;
     }
 
 }

@@ -1,0 +1,78 @@
+<!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 7.0.3-41034ca841d452f3305ba55b9042260aaa1ab5dd  -->
+<jasperReport name="RoarmotReports" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="609f62fd-8315-47cd-a5e7-49cba155e184">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Sample DB"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<query language="sql"><![CDATA[]]></query>
+	<field name="marca" class="java.lang.String"/>
+	<field name="total" class="java.lang.Integer"/>
+	<field name="etiqueta" class="java.lang.String"/>
+	<background splitType="Stretch"/>
+	<title height="100" splitType="Stretch">
+		<element kind="staticText" uuid="f5f60478-6188-4aa6-91e6-9d828c027266" x="150" y="0" width="260" height="100" forecolor="#030303" rotation="None" fontName="Commando" fontSize="24.0" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[ESTADiSTICAS DE MOTOS POR MARCA]]></text>
+			<property name="com.jaspersoft.studio.unit.width" value="px"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+		</element>
+		<property name="com.jaspersoft.studio.unit.height" value="px"/>
+	</title>
+	<pageHeader height="49" splitType="Stretch">
+		<element kind="staticText" uuid="b3648c50-6d03-4982-8dee-880de5eae7f6" x="227" y="10" width="100" height="30" fontName="Commando" fontSize="16.0" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[Total]]></text>
+		</element>
+	</pageHeader>
+	<columnHeader height="61" splitType="Stretch">
+		<element kind="staticText" uuid="18166a8a-62b6-43e2-abc8-9ecd2b9b1e89" x="130" y="11" width="100" height="30" fontName="Aero Matics Display" fontSize="14.0" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[marca]]></text>
+			<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="b3abb652-fcf3-44df-a19f-062c055f7a18"/>
+		</element>
+		<element kind="staticText" uuid="528c0a05-5ca7-4469-bd1b-d74ab8ddd4d6" x="350" y="15" width="100" height="30" fontName="Aero Matics Display" fontSize="14.0" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[total]]></text>
+			<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a2c5232f-321c-4f16-94a2-767a2a56925c"/>
+		</element>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch">
+			<element kind="textField" uuid="20b8d83c-91a2-4920-8b41-2fb0180e7801" x="0" y="0" width="278" height="125" fontName="Aero Matics Display" fontSize="14.0" hTextAlign="Center" vTextAlign="Middle">
+				<expression><![CDATA[$F{marca}]]></expression>
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="b3abb652-fcf3-44df-a19f-062c055f7a18"/>
+			</element>
+			<element kind="textField" uuid="0f99672f-b727-4a8f-97f7-fb40677de993" x="278" y="0" width="277" height="125" fontName="Aero Matics Display" fontSize="14.0" hTextAlign="Center" vTextAlign="Middle">
+				<expression><![CDATA[$F{total}]]></expression>
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a2c5232f-321c-4f16-94a2-767a2a56925c"/>
+			</element>
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+		</band>
+	</detail>
+	<columnFooter height="45" splitType="Stretch">
+		<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+	</columnFooter>
+	<pageFooter height="54" splitType="Stretch"/>
+	<summary height="372" splitType="Stretch">
+		<element kind="chart" chartType="bar3D" uuid="59af7314-7577-4b99-9021-351a411c6d25" mode="Opaque" x="0" y="0" width="555" height="372" forecolor="#FFFFFF" backcolor="#1C2130" evaluationTime="Report" linkType="None" linkTarget="Self">
+			<dataset kind="category">
+				<series>
+					<seriesExpression><![CDATA["SERIES 1"]]></seriesExpression>
+					<categoryExpression><![CDATA[$F{marca}]]></categoryExpression>
+					<valueExpression><![CDATA[$F{total}]]></valueExpression>
+				</series>
+			</dataset>
+			<plot categoryAxisLineColor="#FFFFFF" categoryAxisTickLabelColor="#FFFFFF" categoryAxisLabelColor="#FFFFFF" valueAxisLineColor="#FFFFFF" valueAxisLabelColor="#FFFFFF" valueAxisTickLabelColor="#FFFFFF">
+				<categoryAxisLabelFont italic="false" bold="false"/>
+				<categoryAxisTickLabelFont fontName="Aero Matics Display" fontSize="12.0" italic="true" bold="true"/>
+				<valueAxisLabelFont italic="false" bold="false"/>
+				<valueAxisTickLabelFont italic="true" bold="true"/>
+				<itemLabel>
+					<font italic="false" bold="false"/>
+				</itemLabel>
+			</plot>
+			<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+				<pen lineWidth="1.75" lineStyle="Solid" lineColor="#FFFFFF"/>
+				<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#FFFFFF"/>
+				<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#FFFFFF"/>
+				<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#FFFFFF"/>
+				<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#FFFFFF"/>
+			</box>
+		</element>
+		<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+	</summary>
+</jasperReport>

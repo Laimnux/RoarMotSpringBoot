@@ -1,187 +1,451 @@
 <div th:fragment="scripts">
-    <script src="https://kit.fontawesome.com/xxxxxxxxxx.js" crossorigin="anonymous"></script> 
+    <!-- Reemplaza el kit de FontAwesome con CDN público -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script>
-        // Función genérica para previsualizar imágenes
-        function previewImage(input, previewId, uploadAreaId) {
-            const preview = document.getElementById(previewId);
-            const uploadArea = document.getElementById(uploadAreaId);
+            // =========================================================
+            // CONFIGURACIÓN INICIAL
+            // =========================================================
+            let currentMotoData = null;
             
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
+            // RUTA DE IMAGEN POR DEFECTO - AJUSTA SEGÚN TU PROYECTO
+            const DEFAULT_IMAGE_PATH = 'https://placehold.co/600x400?text=Moto+Sin+Imagen';
+            
+            // =========================================================
+            //  FUNCIÓN PRINCIPAL: VERIFICAR SI HAY MOTO REGISTRADA
+            // =========================================================
+            function verificarYMostrarMotoRegistrada() {
+            console.log('=== VERIFICANDO MOTO ===');
+            
+            // Usa las variables GLOBALES
+            const motoDesdeBackend = window.motoDelUsuarioBackend || null;
+            const usuarioId = window.usuarioIdBackend || null;
+            
+            console.log('DATOS DESDE FRAGMENTO:');
+            console.log('  - usuarioId:', usuarioId);
+            console.log('  - motoDesdeBackend:', motoDesdeBackend);
+            
+            // RESTAURAR localStorage (si quieres usarlo)
+            // localStorage.removeItem('motoUsuario'); // Descomenta si quieres limpiar
+            
+            // Lógica para mostrar
+            if (motoDesdeBackend && motoDesdeBackend.placaMoto) {
+                console.log('Mostrando moto del backend:', motoDesdeBackend.placaMoto);
+                currentMotoData = motoDesdeBackend;
+                mostrarVistaDetalle(motoDesdeBackend);
+                return true;
+            }
+            
+            console.log('Mostrando formulario vacío');
+            mostrarVistaRegistro();
+            return false;
+        }
+
+        // También COMENTA esta función:
+        function guardarEnLocalStorage(datosMoto) {
+            // TEMPORALMENTE NO GUARDAR
+            // localStorage.setItem('motoUsuario', JSON.stringify(datosMoto));
+            console.log('⚠️ localStorage deshabilitado temporalmente');
+        }
+
+        // =========================================================
+        //  FUNCIONES DE PERSISTENCIA
+        // =========================================================
+        function guardarEnLocalStorage(datosMoto) {
+            try {
+                localStorage.setItem('motoUsuario', JSON.stringify(datosMoto));
+                console.log('Datos guardados en localStorage');
+            } catch (e) {
+                console.error('Error guardando en localStorage:', e);
+            }
+        }
+
+        function limpiarLocalStorage() {
+            localStorage.removeItem('motoUsuario');
+            sessionStorage.removeItem('imagenMotoSubida');
+            console.log('localStorage limpiado');
+        }
+
+        // =========================================================
+        // FUNCIONES DE VISUALIZACIÓN
+        // =========================================================
+        function mostrarVistaDetalle(datosMoto) {
+            console.log('Mostrando vista de detalle');
+            
+            // Ocultar formulario de registro
+            const registroDiv = document.getElementById('moto-manager__registro');
+            if (registroDiv) {
+                registroDiv.classList.remove('active');
+                registroDiv.classList.add('hidden');
+            }
+            
+            // Mostrar vista de detalle
+            const detalleDiv = document.getElementById('moto-manager__detalle');
+            if (detalleDiv) {
+                detalleDiv.classList.remove('hidden');
+                detalleDiv.classList.add('active');
                 
-                reader.onload = function(e) {
-                    preview.src = e.target.result;
-                    preview.classList.remove('hidden'); // Asegura que la imagen se muestre
-                    if (uploadArea) { // Oculta el área de carga si existe
-                        uploadArea.classList.add('hidden');
+                // Llenar todos los campos con los datos
+                if (datosMoto.placaMoto) document.getElementById('detalle-placa').textContent = datosMoto.placaMoto;
+                if (datosMoto.marcaMoto) document.getElementById('detalle-marca').textContent = datosMoto.marcaMoto;
+                if (datosMoto.modeloMoto) document.getElementById('detalle-modelo').textContent = datosMoto.modeloMoto;
+                if (datosMoto.colorMoto) document.getElementById('detalle-color').textContent = datosMoto.colorMoto;
+                if (datosMoto.kilometraje) document.getElementById('detalle-kilometraje').textContent = datosMoto.kilometraje.toLocaleString() + ' km';
+                if (datosMoto.tecnomecanica) document.getElementById('detalle-tecnomecanica').textContent = datosMoto.tecnomecanica;
+                if (datosMoto.soatMoto) document.getElementById('detalle-soat').textContent = datosMoto.soatMoto;
+                
+                // Manejar la imagen CON FALLBACK
+                const detalleImagen = document.getElementById('detalle-imagen');
+                if (detalleImagen) {
+                    let imagenUrl = datosMoto.imagenMoto;
+                    
+                    // Si no hay imagen, usar placeholder
+                    if (!imagenUrl || imagenUrl === '' || imagenUrl === 'moto-default.jpg') {
+                        imagenUrl = DEFAULT_IMAGE_PATH;
+                    }
+                    // Si es una ruta relativa sin /, agregar /img/
+                    else if (!imagenUrl.startsWith('http') && !imagenUrl.startsWith('/') && !imagenUrl.startsWith('data:')) {
+                        imagenUrl = '/img/' + imagenUrl;
+                    }
+                    
+                    // Configurar imagen
+                    detalleImagen.src = imagenUrl;
+                    
+                    // Si falla la carga, usar placeholder
+                    detalleImagen.onerror = function() {
+                        console.warn('Imagen no encontrada, usando placeholder:', imagenUrl);
+                        this.src = DEFAULT_IMAGE_PATH;
+                        this.onerror = null; // Prevenir loop infinito
+                    };
+                }
+            }
+        }
+
+        function mostrarVistaRegistro() {
+            console.log('Mostrando vista de registro');
+            
+            // Mostrar formulario de registro
+            const registroDiv = document.getElementById('moto-manager__registro');
+            if (registroDiv) {
+                registroDiv.classList.remove('hidden');
+                registroDiv.classList.add('active');
+            }
+            
+            // Ocultar vista de detalle
+            const detalleDiv = document.getElementById('moto-manager__detalle');
+            if (detalleDiv) {
+                detalleDiv.classList.remove('active');
+                detalleDiv.classList.add('hidden');
+            }
+            
+            // Si estamos en modo nuevo (no edición), limpiar formulario
+            if (!currentMotoData) {
+                limpiarFormulario();
+            }
+        }
+
+        function limpiarFormulario() {
+            const form = document.getElementById('motoForm');
+            if (form) {
+                form.reset();
+                
+                // Restaurar placeholder de imagen
+                const imageDisplay = document.getElementById('moto-image-display');
+                if (imageDisplay) {
+                    imageDisplay.innerHTML = `
+                        <i class="fas fa-motorcycle text-4xl mb-2 text-gray-400"></i>
+                        <p class="text-sm font-bold">Subir foto de tu moto</p>
+                        <p class="text-xs text-gray-400">Clic para seleccionar</p>
+                    `;
+                }
+                
+                console.log('Formulario limpiado');
+            }
+        }
+
+        function precargarFormularioEdicion() {
+            if (!currentMotoData) {
+                console.log('No hay datos para precargar');
+                return;
+            }
+            
+            console.log('Precargando datos para edición');
+            
+            // Llenar campos del formulario con datos existentes
+            document.getElementById('marca').value = currentMotoData.marcaMoto || '';
+            document.getElementById('modelo').value = currentMotoData.modeloMoto || '';
+            document.getElementById('color').value = currentMotoData.colorMoto || '';
+            document.getElementById('placa').value = currentMotoData.placaMoto || '';
+            document.getElementById('kilometraje').value = currentMotoData.kilometraje || 0;
+            document.getElementById('soat').value = currentMotoData.soatMoto || '';
+            document.getElementById('tecnomecanica').value = currentMotoData.tecnomecanica || '';
+            
+            // Precargar imagen si existe
+            const imageDisplay = document.getElementById('moto-image-display');
+            if (imageDisplay && currentMotoData.imagenMoto) {
+                let imgUrl = currentMotoData.imagenMoto;
+                
+                // Asegurar ruta correcta
+                if (imgUrl && !imgUrl.startsWith('http') && !imgUrl.startsWith('/') && !imgUrl.startsWith('data:')) {
+                    imgUrl = '/img/' + imgUrl;
+                }
+                
+                if (imgUrl && imgUrl !== 'moto-default.jpg') {
+                    imageDisplay.innerHTML = `
+                        <img src="${imgUrl}" 
+                             alt="Foto de la moto" 
+                             class="w-full h-full object-cover"
+                             onerror="this.onerror=null; this.parentElement.innerHTML = '<i class=\"fas fa-motorcycle text-4xl mb-2 text-gray-400\"></i><p class=\"text-sm font-bold\">Imagen no disponible</p>';">
+                    `;
+                }
+            }
+        }
+
+        // =========================================================
+        //  INICIALIZACIÓN AL CARGAR LA PÁGINA
+        // =========================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Página cargada. Inicializando sistema de motos...');
+            
+            // 1. Verificar y mostrar moto registrada
+            verificarYMostrarMotoRegistrada();
+            
+            // 2. Configurar todos los eventos
+            configurarEventListeners();
+            
+            // 3. Configurar arrastrar y soltar para imagen
+            configurarDragAndDrop();
+        });
+
+        function configurarEventListeners() {
+            // 1. Botón Editar - Cambia a vista de edición
+            document.getElementById('btn-editar-moto')?.addEventListener('click', function() {
+                console.log('Botón editar clickeado - Cambiando a modo edición');
+                mostrarVistaRegistro();
+                precargarFormularioEdicion();
+            });
+            
+            // 2. Botón Cancelar (si existe)
+            document.getElementById('btn-cancelar')?.addEventListener('click', function() {
+                console.log('Cancelar clickeado');
+                if (currentMotoData) {
+                    mostrarVistaDetalle(currentMotoData);
+                } else {
+                    mostrarVistaRegistro();
+                    limpiarFormulario();
+                }
+            });
+            
+            // 3. Subida de imagen
+            const uploadInput = document.getElementById('upload-moto-image');
+            if (uploadInput) {
+                uploadInput.addEventListener('change', async function(event) {
+                    const file = event.target.files[0];
+                    if (!file) return;
+                    
+                    console.log('📸 Imagen seleccionada:', file.name);
+                    
+                    // Previsualización inmediata
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const displayArea = document.getElementById('moto-image-display');
+                        if (displayArea) {
+                            displayArea.innerHTML = `<img src="${e.target.result}" alt="Foto de la moto" class="w-full h-full object-cover" />`;
+                            // Guardar temporalmente
+                            displayArea.dataset.tempImage = e.target.result;
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                    
+                    // Intentar subir al backend si es necesario
+                    try {
+                        const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
+                        const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content');
+                        
+                        if (csrfToken && csrfHeader) {
+                            const formData = new FormData();
+                            formData.append('imagenMoto', file);
+                            
+                            const response = await fetch('/api/motos/subir-imagen', {
+                                method: 'POST',
+                                headers: { [csrfHeader]: csrfToken },
+                                body: formData
+                            });
+                            
+                            if (response.ok) {
+                                const result = await response.json();
+                                sessionStorage.setItem('imagenMotoSubida', result.nombreArchivo || file.name);
+                                console.log('Imagen subida al servidor');
+                            }
+                        }
+                    } catch (error) {
+                        console.log('Imagen guardada solo localmente:', error);
+                        // Guardar solo en sessionStorage como fallback
+                        sessionStorage.setItem('imagenTemp', file.name);
+                    }
+                });
+            }
+            
+            // 4. Envío del formulario
+            const motoForm = document.getElementById('motoForm');
+            if (motoForm) {
+                motoForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    console.log('📤 Enviando formulario...');
+                    
+                    // Obtener tokens CSRF
+                    const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
+                    const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content');
+                    
+                    // Obtener imagen subida
+                    const imagenSubida = sessionStorage.getItem('imagenMotoSubida');
+                    const imagenTemp = document.getElementById('moto-image-display')?.dataset.tempImage;
+                    
+                    // Preparar datos
+                    const formData = {
+                        marcaMoto: document.getElementById('marca').value,
+                        modeloMoto: document.getElementById('modelo').value,
+                        colorMoto: document.getElementById('color').value,
+                        placaMoto: document.getElementById('placa').value,
+                        kilometraje: parseInt(document.getElementById('kilometraje').value) || 0,
+                        soatMoto: document.getElementById('soat').value,
+                        tecnomecanica: document.getElementById('tecnomecanica').value,
+                        idMoto: currentMotoData ? currentMotoData.idMoto : null,
+                        imagenMoto: imagenSubida || (currentMotoData ? currentMotoData.imagenMoto : '')
+                    };
+                    
+                    // Validación básica
+                    if (!formData.placaMoto || !formData.marcaMoto) {
+                        alert('Por favor completa placa y marca');
+                        return;
+                    }
+                    
+                    try {
+                        // Enviar al backend
+                        const response = await fetch('/api/motos', {
+                            method: 'POST',
+                            headers: { 
+                                'Content-Type': 'application/json',
+                                [csrfHeader]: csrfToken 
+                            },
+                            body: JSON.stringify(formData)
+                        });
+                        
+                        if (response.ok) {
+                            const resultado = await response.json();
+                            console.log(' Moto guardada exitosamente');
+                            
+                            // Actualizar datos
+                            currentMotoData = resultado;
+                            
+                            // Guardar en localStorage
+                            guardarEnLocalStorage(resultado);
+                            
+                            // Limpiar almacenamiento temporal
+                            sessionStorage.removeItem('imagenMotoSubida');
+                            sessionStorage.removeItem('imagenTemp');
+                            
+                            // Mostrar vista de detalle
+                            mostrarVistaDetalle(resultado);
+                            
+                            // Mostrar mensaje
+                            alert('Moto registrada/actualizada correctamente');
+                            
+                        } else {
+                            const error = await response.text();
+                            console.error(' Error del servidor:', error);
+                            alert('Error al guardar: ' + error);
+                        }
+                    } catch (error) {
+                        console.error('Error de conexión:', error);
+                        alert('Error de conexión con el servidor');
+                    }
+                });
+            }
+            
+            // 5. Botón para eliminar moto (si existe)
+            document.getElementById('btn-eliminar-moto')?.addEventListener('click', function() {
+                if (confirm('¿Estás seguro de eliminar el registro de tu moto?')) {
+                    limpiarLocalStorage();
+                    currentMotoData = null;
+                    mostrarVistaRegistro();
+                    limpiarFormulario();
+                    alert('Registro eliminado');
+                }
+            });
+        }
+
+        function configurarDragAndDrop() {
+            const dropArea = document.getElementById('moto-image-display');
+            if (!dropArea) return;
+            
+            // Prevenir comportamientos por defecto
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            
+            // Resaltar área cuando se arrastra sobre ella
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropArea.addEventListener(eventName, highlight, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, unhighlight, false);
+            });
+            
+            function highlight() {
+                dropArea.classList.add('border-blue-500', 'border-2');
+            }
+            
+            function unhighlight() {
+                dropArea.classList.remove('border-blue-500', 'border-2');
+            }
+            
+            // Manejar archivo soltado
+            dropArea.addEventListener('drop', handleDrop, false);
+            
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                
+                if (files.length > 0) {
+                    // Simular cambio en el input file
+                    const input = document.getElementById('upload-moto-image');
+                    if (input) {
+                        // Necesitamos crear un DataTransfer para asignar archivos
+                        const dataTransfer = new DataTransfer();
+                        dataTransfer.items.add(files[0]);
+                        input.files = dataTransfer.files;
+                        
+                        // Disparar evento change
+                        const event = new Event('change', { bubbles: true });
+                        input.dispatchEvent(event);
                     }
                 }
-                
-                reader.readAsDataURL(input.files[0]);
-            } else {
-                // Si no se selecciona ningún archivo, muestra el placeholder y el área de carga
-                preview.src = preview.dataset.defaultSrc || ''; // Usa un defaultSrc si lo tienes
-                preview.classList.add('hidden'); // Oculta la imagen si no hay archivo
-                if (uploadArea) {
-                    uploadArea.classList.remove('hidden'); // Muestra el área de carga
-                }
             }
         }
-
-        // Vincula la función de previsualización al input de la moto.
-    const motoUploadInput = document.getElementById('motoUpload');
-    if (motoUploadInput) {
-        motoUploadInput.addEventListener('change', function() {
-            previewImage(this, 'motoPreview', 'uploadArea');
-            // Aquí puedes agregar la lógica para enviar el formulario automáticamente si es necesario
-            // document.getElementById('motoForm').submit();
-        });
-
-        // Lógica de inicialización para mostrar una imagen de moto preexistente
-        const motoPreview = document.getElementById('motoPreview');
-        const uploadArea = document.getElementById('uploadArea');
-        if (motoPreview && motoPreview.src && motoPreview.src !== window.location.href && !motoPreview.src.includes('placehold.co')) {
-            uploadArea.classList.add('hidden');
-            motoPreview.classList.remove('hidden');
-        } else {
-            if (motoPreview) motoPreview.classList.add('hidden');
-            if (uploadArea) uploadArea.classList.remove('hidden');
-        }
-    }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            // Inicialización de la lógica para inputs de archivos
-            const soatUploadInput = document.getElementById('soatUpload');
-            const tecnomecanicaUploadInput = document.getElementById('tecnomecanicaUpload');
-
-            soatUploadInput.addEventListener('change', function() {
-                if (this.files && this.files[0]) {
-                    console.log('SOAT seleccionado:', this.files[0].name);
-                }
-            });
-
-            tecnomecanicaUploadInput.addEventListener('change', function() {
-                if (this.files && this.files[0]) {
-                    console.log('Tecnomecánica seleccionada:', this.files[0].name);
-                }
-            });
-
-            // Inicializar la imagen de perfil (NOTA: profilePreview no está en el HTML del dashboard, pero mantenemos la lógica)
-            const profilePreview = document.getElementById('profilePreview');
-            const profileUploadArea = document.getElementById('profileUploadArea');
-            if (profilePreview && profilePreview.src && profilePreview.src !== window.location.href && !profilePreview.src.includes('placehold.co')) { 
-                profileUploadArea.classList.add('hidden');
-                profilePreview.classList.remove('hidden');
-            } else {
-                if(profilePreview) profilePreview.classList.add('hidden'); // Añadimos chequeo para evitar error si no existe
-                if(profileUploadArea) profileUploadArea.classList.remove('hidden'); // Añadimos chequeo
+        
+        // =========================================================
+        //   FUNCIONES PÚBLICAS (accesibles desde otros scripts)
+        // =========================================================
+        window.MotoManager = {
+            obtenerDatosMoto: function() {
+                return currentMotoData;
+            },
+            tieneMotoRegistrada: function() {
+                return currentMotoData !== null;
+            },
+            recargarDatos: function() {
+                return verificarYMostrarMotoRegistrada();
             }
-
-            // Lógica de previsualización para la imagen de la moto
-            const motoUploadInput = document.getElementById('motoUpload');
-            if (motoUploadInput) {
-                // Si ya hay una imagen de moto cargada (ej. desde la DB), previsualizarla
-                if (motoUploadInput.dataset.initialImage) { 
-                    document.getElementById('motoPreview').src = motoUploadInput.dataset.initialImage;
-                    document.getElementById('motoPreview').classList.remove('hidden');
-                    document.getElementById('uploadArea').classList.add('hidden');
-                }
-                motoUploadInput.onchange = function() {
-                    previewImage(this, 'motoPreview', 'uploadArea');
-                };
-            }
-
-            // Lógica del carrusel de tips automático
-            const tipsCarouselContainer = document.getElementById('tips-carousel-container');
-            const tipsInnerWrapper = document.getElementById('tips-inner-wrapper');
-            const tips = document.querySelectorAll('.tip-item-carousel');
-            const totalTips = tips.length;
-            let currentSlide = 0; 
-            let intervalId;
-
-            function getTipsPerPage() {
-                if (window.innerWidth >= 1024) { // Desktop (lg breakpoint)
-                    return 4;
-                } else if (window.innerWidth >= 768) { // Tablet (md breakpoint)
-                    return 2;
-                } else { // Mobile
-                    return 1;
-                }
-            }
-
-            function updateCarousel() {
-                if (!tipsCarouselContainer || !tipsInnerWrapper || totalTips === 0) return;
-
-                const tipsPerPage = getTipsPerPage();
-                const totalPages = Math.ceil(totalTips / tipsPerPage);
-                
-                if (currentSlide >= totalPages) {
-                    currentSlide = 0; 
-                }
-
-                // Ajusta el ancho de tipsInnerWrapper para que contenga todas las 'páginas'
-                tipsInnerWrapper.style.width = `${totalPages * 100}%`; 
-
-                // Ajusta el ancho de cada tip individual para que se ajusten a la cuadrícula actual
-                tips.forEach(tip => {
-                    // Calculamos el ancho de cada item en el wrapper global
-                    // 100% / totalTips * totalPages
-                    tip.style.width = `${100 / (tipsPerPage * totalPages)}%`; 
-                    tip.style.flexShrink = 0; // Evita que se encojan
-                    tip.style.flexGrow = 1; // Asegura que ocupen el espacio
-                });
-                
-                // Mueve el wrapper completo
-                const offset = -currentSlide * 100 / totalPages;
-                tipsInnerWrapper.style.transform = `translateX(${offset}%)`;
-            }
-
-            function startAutoSlide() {
-                if (intervalId) {
-                    clearInterval(intervalId);
-                }
-                if (tips.length > getTipsPerPage()) { // Solo inicia si hay más tips de los que caben
-                    intervalId = setInterval(() => {
-                        const tipsPerPage = getTipsPerPage();
-                        const totalPages = Math.ceil(totalTips / tipsPerPage);
-                        currentSlide = (currentSlide + 1) % totalPages;
-                        updateCarousel();
-                    }, 8000); 
-                }
-            }
-
-            // Inicializa el carrusel y comienza el deslizamiento automático al cargar la página
-            updateCarousel();
-            startAutoSlide();
-
-            // Re-calcula y actualiza el carrusel cuando la ventana cambia de tamaño
-            window.addEventListener('resize', () => {
-                updateCarousel();
-                startAutoSlide();
-            });
-
-            // --- Lógica para desvanecer mensajes de éxito y error ---
-            const mensajeExito = document.getElementById('mensaje-exito');
-            const mensajeError = document.getElementById('mensaje-error');
-
-            if (mensajeExito) {
-                setTimeout(() => {
-                    mensajeExito.style.transition = 'opacity 1s ease-out';
-                    mensajeExito.style.opacity = '0';
-                    // Elimina el elemento del DOM después de la transición
-                    setTimeout(() => mensajeExito.remove(), 1000);
-                }, 5000); // 5 segundos
-            }
-
-            if (mensajeError) {
-                setTimeout(() => {
-                    mensajeError.style.transition = 'opacity 1s ease-out';
-                    mensajeError.style.opacity = '0';
-                    // Elimina el elemento del DOM después de la transición
-                    setTimeout(() => mensajeError.remove(), 1000);
-                }, 5000); // 5 segundos
-            }
-        });
+        };
+        
+        console.log('Script de gestión de motos cargado correctamente');
+        
     </script>
 </div>

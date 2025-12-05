@@ -1,15 +1,16 @@
 package com.roarmot.roarmot.config;
 
-import com.roarmot.roarmot.Services.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 public class SecurityConfig {
@@ -17,42 +18,82 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            // IGNORAR CSRF para las rutas POST de registro.
+            // 1. CSRF: Configuración SEGURA
             .csrf(csrf -> csrf
-                .ignoringRequestMatchers("/enviar-codigo", "/validar-codigo", "/guardar-usuario") // AÑADIDO: /guardar-usuario
+                .ignoringRequestMatchers(
+                    "/enviar-codigo", 
+                    "/validar-codigo",
+                    "/guardar-usuario",
+                    "/panel/ProductProcess",
+                    "/api/email/**"  // APIs públicas sin CSRF
+                )
             )
             .authorizeHttpRequests(authorize -> authorize
-                // 1. Recursos Estáticos (GET)
-                .requestMatchers("/css/**", "/js/**", "/imagenes/**", "/favicon.ico").permitAll()
+                // ORDEN CRÍTICO: De más específico a más general
                 
-                // 2. Rutas del Flujo de Registro que son GET (mostrar la página)
+                // 1. APIs PÚBLICAS (sin autenticación)
+                .requestMatchers("/api/email/**").permitAll()
+
+                //  - APIs de Reportes para Vendedores
+                .requestMatchers("/api/reportes/**").hasAuthority("ROLE_Vendedor")
+    
+                .requestMatchers("/api/motos/**").authenticated()  // APIs protegidas
+                
+                // 2. RECURSOS ESTÁTICOS (sin autenticación)
+                .requestMatchers("/css/**", "/js/**", "/imagenes/**", "/uploads/**", "/products/**", "/webjars/**",
+                    "/favicon.ico", "/favicon.icon", "/error"
+                ).permitAll()
+                
+                // 3. PÁGINAS PÚBLICAS (sin autenticación)
                 .requestMatchers("/", "/login", "/RegistroPaso1", "/RegistroPaso2", "/RegistroPaso3").permitAll()
                 
-                // 3. RUTAS DE PROCESAMIENTO DEL REGISTRO QUE SON POST
-                .requestMatchers(HttpMethod.POST, "/enviar-codigo", "/validar-codigo", "/guardar-usuario").permitAll() // AÑADIDO: /guardar-usuario
+                // 4. ENDPOINTS POST PÚBLICOS (sin autenticación)
+                .requestMatchers(HttpMethod.POST, "/enviar-codigo", "/validar-codigo", "/guardar-usuario").permitAll()
                 
-                // 4. Cualquier otra solicitud DEBE estar autenticada
+                // 5. ÁREA ADMINISTRATIVA (requiere autenticación y rol)
+                .requestMatchers("/panel/**").hasAuthority("ROLE_Vendedor")
+                
+                // 6. TODAS LAS DEMÁS RUTAS (requieren autenticación)
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
                 .loginPage("/login") 
                 .loginProcessingUrl("/login") 
                 .defaultSuccessUrl("/dashboard", true)
-                .failureUrl("/login?error")
+                .failureUrl("/login?error=true")
                 .permitAll()
             )
             .logout(logout -> logout
+                .logoutUrl("/logout") 
+                .logoutSuccessUrl("/login?logout=true")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID")
                 .permitAll()
+            )
+            // 7. CONFIGURACIONES ADICIONALES DE SEGURIDAD
+            .sessionManagement(session -> session
+                .maximumSessions(1) // Solo una sesión por usuario
+                .maxSessionsPreventsLogin(false) // Permite nuevo login, cierra sesión anterior
+            )
+            .headers(headers -> headers
+                .contentSecurityPolicy(csp -> csp
+                    .policyDirectives(
+                        "default-src 'self'; " +
+                        "script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://kit.fontawesome.com; " +
+                        "connect-src 'self' https://fonts.googleapis.com; " +
+                        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.tailwindcss.com https://cdnjs.cloudflare.com; " +
+                        "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; " +
+                        "img-src 'self' data: https:; " +
+                        "frame-ancestors 'none';"
+
+                    ) // Imágenes locales y externas
+                )
+                .frameOptions(frame -> frame.deny()) // Protección contra clickjacking
             );
                 
         return http.build();
     }
 
-    /*
-     * Este bean es crucial y lo usa Spring Security 
-     * para gestionar el proceso de autenticación. Lo hemos agregado 
-     * para que la configuración sea completa.
-     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();

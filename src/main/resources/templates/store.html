@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tienda Motera - RoarMot</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    /* Ocultar scrollbar */
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    /* Estilo de sombra personalizada para el logo en hover */
+    .hover\:shadow-text-logo:hover {
+        filter: drop-shadow(0 0 4px rgba(252, 211, 77, 0.5));
+    }
+    /* Estilos base para los enlaces de navegación */
+    .nav-link {
+        color: #e5e7eb; /* gray-200 */
+        font-weight: 300; /* Letra delgada (Light) */
+        transition: color 0.2s, text-shadow 0.2s, transform 0.1s;
+        position: relative;
+        padding-bottom: 4px; 
+        display: flex; 
+        align-items: center;
+    }
+    /* Efecto de línea/subrayado que aparece al hacer hover (Slide-in effect) */
+    .nav-link::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 2px;
+        bottom: 0;
+        left: 0;
+        background-color: #fcd34d; /* yellow-400 */
+        transform: scaleX(0); 
+        transform-origin: bottom right;
+        transition: transform 0.3s ease-out; 
+        box-shadow: 0 0 5px rgba(252, 211, 77, 0.7);
+    }
+    /* Lo que sucede al hacer hover */
+    .nav-link:hover {
+        color: #fcd34d; /* yellow-400 */
+        text-shadow: 0 0 5px rgba(255, 255, 0, 0.5), 0 0 10px rgba(255, 255, 0, 0.2);
+    }
+    
+    .nav-link:hover::after {
+        transform: scaleX(1); 
+        transform-origin: bottom left;
+    }
+    
+    .nav-link:active {
+        transform: scale(0.98);
+    }
+    /* Estilo de sombra personalizada para el botón de Ingresar (efecto Glow) */
+    #login-button:hover {
+        box-shadow: 0 0 10px rgba(252, 211, 77, 0.7), 0 0 20px rgba(252, 211, 77, 0.4);
+    }
+</style>
+</head>
+<body class="bg-[#151921] text-gray-200">
+
+    <header class="bg-[#151921] border-b border-gray-700 shadow-xl sticky top-0 z-50">
+      <div class="max-w-7xl mx-auto flex items-center justify-between p-4">
+          
+                    <a th:href="@{/}" class="flex items-center gap-2 group cursor-pointer transition duration-300 transform 
+            hover:scale-[1.03] hover:shadow-text-logo active:scale-95">
+              <img th:src="@{/imagenes/logoBlanco.png}" alt="Logo casco" class="h-10 w-auto transition duration-300">
+              <img th:src="@{/imagenes/tipografiaLogo.png}" alt="Texto logo" class="h-10 w-auto transition duration-300">
+          </a>
+          
+                    <nav class="space-x-8 hidden md:flex">
+              
+              <a th:href="@{/dashboard}" class="nav-link">
+                  <i class="fas fa-home mr-1"></i> Inicio
+              </a>
+              
+              <a th:href="@{/ofertas}" class="nav-link">
+                  <i class="fas fa-tags mr-1"></i> Ofertas
+              </a>
+              
+              <a th:href="@{/novedades}" class="nav-link">
+                  <i class="fas fa-bolt mr-1"></i> Novedades
+              </a>
+              
+              <a th:href="@{/top}" class="nav-link">
+                  <i class="fas fa-crown mr-1"></i> Top
+              </a>
+              
+          </nav>
+          
+                    <div class="flex items-center space-x-4">
+              
+                            <input type="text" placeholder="Buscar..."
+                    class="px-4 py-1.5 rounded-full text-gray-200 bg-[#2A2B32] border border-gray-700 
+                            focus:ring-2 focus:ring-yellow-400 transition duration-300 w-32 md:w-48 text-sm placeholder-gray-500">
+              
+                            <a th:href="@{/cart}" class="text-gray-200 hover:text-yellow-400 transition duration-200 relative">
+                  <i class="fas fa-shopping-cart text-xl"></i>
+                  <span class="absolute -top-1 -right-1.5 bg-[#FF2C4D] text-white text-[10px] w-4 h-4 
+                        rounded-full flex items-center justify-center font-bold">3</span>
+              </a>
+
+                            <a th:href="@{/login}" id="login-button" 
+                class="bg-yellow-400 text-black px-4 py-1.5 rounded-md font-bold text-sm 
+                        transition duration-300 hover:bg-yellow-500 active:scale-95 cursor-pointer shadow-lg">
+                  Ingresar
+              </a>
+              
+                            <button class="md:hidden text-2xl text-gray-200 hover:text-yellow-400">
+                  <i class="fas fa-bars"></i>
+              </button>
+          </div>
+      </div>
+  </header>
+      <div class="relative w-full mt-4"> 
+            <div class="overflow-hidden rounded-lg bg-[#1E1F26] h-96 lg:h-[400px] relative">
+                    <img th:src="@{/imagenes/banner3.png}" 
+              alt="Banner promocional de accesorios y repuestos" 
+              class="w-full h-full object-cover object-center" />
+              
+                    <div class="absolute inset-0 flex items-center justify-end p-4 pr-16 md:pr-28 lg:pr-60">
+              
+              <h1 class="text-white text-right font-extrabold tracking-tight drop-shadow-lg max-w-lg">
+                  <span class="block text-5xl md:text-7xl lg:text-8xl">ACCESORIOS</span>
+                  <span class="block text-3xl md:text-5xl lg:text-6xl mt-1">Y REPUESTOS</span>
+              </h1>
+          </div>
+          
+      </div>
+  </div>
+
+    <div class="mt-12 pb-16">
+      <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+
+                    <h2 class="text-lg font-medium mb-4 text-white">DESTACADOS Y RECOMENDADOS</h2>
+
+                    <div class="flex flex-wrap justify-center gap-6">
+                
+                            <div th:each="i : ${#numbers.sequence(1, 1)}" 
+                    class="w-[250px] flex-shrink-0 cursor-pointer">
+                    
+                  <div class="bg-gray-800 transition duration-300 hover:bg-gray-900 hover:scale-[1.02] hover:shadow-2xl rounded-lg overflow-hidden shadow-xl border border-gray-700">
+                      
+                                          <div class="relative h-[200px]">
+                          <img th:src="@{/imagenes/casco4.png}" 
+                                alt="Casco Blazzblue de oferta" 
+                                class="absolute inset-0 w-full h-full object-cover"/>
+                      </div>
+                      
+                                          <div class="p-3 card-details min-h-[80px] border-t border-gray-700">
+                          <h3 class="font-semibold text-sm truncate text-white">Casco Blazzblue A</h3>
+                          <p class="text-xs text-gray-400">Casco azul carmesi</p>
+                          
+                                                  <div class="bg-[#FF2C4D] text-white inline-block px-2 py-0.5 rounded-md mt-2 font-bold text-xs shadow-md">
+                              ¡OFERTA! -17%
+                          </div>
+                      </div>
+                  </div>
+                </div>
+                                      <div th:each="i : ${#numbers.sequence(1, 1)}" 
+                    class="w-[250px] flex-shrink-0 cursor-pointer">
+                    
+                  <div class="bg-gray-800 transition duration-300 hover:bg-gray-900 hover:scale-[1.02] hover:shadow-2xl rounded-lg overflow-hidden shadow-xl border border-gray-700">
+                      
+                                          <div class="relative h-[200px]">
+                          <img th:src="@{/imagenes/chaqueta.png}" 
+                                alt="Chaqueta de oferta" 
+                                class="absolute inset-0 w-full h-full object-cover"/>
+                      </div>
+                      
+                                          <div class="p-3 card-details min-h-[80px] border-t border-gray-700">
+                          <h3 class="font-semibold text-sm truncate text-white">Chaqueta negra DAINESE</h3>
+                          <p class="text-xs text-gray-400">DAINESE diferente talla</p>
+                          
+                                                  <div class="bg-[#FF2C4D] text-white inline-block px-2 py-0.5 rounded-md mt-2 font-bold text-xs shadow-md">
+                              ¡OFERTA! -3%
+                          </div>
+                      </div>
+                  </div>
+                </div>
+                                      <div th:each="i : ${#numbers.sequence(1, 1)}" 
+                    class="w-[250px] flex-shrink-0 cursor-pointer">
+                    
+                  <div class="bg-gray-800 transition duration-300 hover:bg-gray-900 hover:scale-[1.02] hover:shadow-2xl rounded-lg overflow-hidden shadow-xl border border-gray-700">
+                      
+                                          <div class="relative h-[200px]">
+                          <img th:src="@{/imagenes/guantes.jpg}" 
+                                alt="Guantes de oferta" 
+                                class="absolute inset-0 w-full h-full object-cover"/>
+                      </div>
+                      
+                                          <div class="p-3 card-details min-h-[80px] border-t border-gray-700">
+                          <h3 class="font-semibold text-sm truncate text-white">Guantes Mark 1</h3>
+                          <p class="text-xs text-gray-400">Mark 1 Pasta dura</p>
+                          
+                                                  <div class="bg-[#FF2C4D] text-white inline-block px-2 py-0.5 rounded-md mt-2 font-bold text-xs shadow-md">
+                              ¡OFERTA! -25%
+                          </div>
+                      </div>
+                  </div>
+                </div>
+                                      <div th:each="i : ${#numbers.sequence(1, 1)}" 
+                    class="w-[250px] flex-shrink-0 cursor-pointer">
+                    
+                  <div class="bg-gray-800 transition duration-300 hover:bg-gray-900 hover:scale-[1.02] hover:shadow-2xl rounded-lg overflow-hidden shadow-xl border border-gray-700">
+                      
+                                          <div class="relative h-[200px]">
+                          <img th:src="@{/imagenes/casco 2.jpg}" 
+                                alt="Casco Modular de oferta" 
+                                class="absolute inset-0 w-full h-full object-cover"/>
+                      </div>
+                      
+                                          <div class="p-3 card-details min-h-[80px] border-t border-gray-700">
+                          <h3 class="font-semibold text-sm truncate text-white">Casco Modular Adventure MX</h3>
+                          <p class="text-xs text-gray-400">Termina 29 SEP 12:00</p>
+                          
+                                                  <div class="bg-[#FF2C4D] text-white inline-block px-2 py-0.5 rounded-md mt-2 font-bold text-xs shadow-md">
+                              ¡OFERTA! -7%
+                          </div>
+                      </div>
+                  </div>
+                </div>
+                    </div>
+      </div>
+  </div>
+
+      <div class="mt-8 pb-8">
+        <div class="max-w-[765px] mx-auto px-4 sm:px-6 lg:px-0">
+            
+            <h2 class="text-lg font-medium mb-6 text-gray-300">CATEGORÍAS DE OFERTA</h2>
+            
+                        <div class="flex flex-col lg:flex-row gap-6 lg:items-stretch"> 
+
+                                <div class="relative rounded-lg overflow-hidden bg-[#1E1F26] card-large w-full lg:flex-shrink-0 card-border-style group cursor-pointer">
+                    
+                    <img th:src="@{/imagenes/Motero.jpg}" 
+                         alt="Oferta destacada de la semana" 
+                         class="w-full h-full object-cover opacity-80 transition duration-300 group-hover:opacity-100"/>
+                    
+                    <div class="absolute inset-0 bg-black bg-opacity-40 flex flex-col justify-end p-8">
+                        <h3 class="text-4xl font-extrabold text-white leading-tight mb-4">
+                            OFERTA DE LA SEMANA<br><span class="text-yellow-400">HASTA EL 70%</span>
+                        </h3>
+                        <p class="text-lg text-gray-200 mb-6">
+                            Renueva tu equipamiento con nuestras mejores marcas.
+                        </p>
+                        <a th:href="@{/semana-oferta}" class="inline-block px-6 py-2 bg-yellow-500 text-gray-900 font-bold rounded-lg shadow-xl hover:bg-yellow-400 transition">
+                            ¡Comprar Ahora!
+                        </a>
+                    </div>
+                </div>
+
+                                <div class="card-small-stack lg:flex-shrink-0 lg:w-[250px] w-full">
+                    
+                                        <div class="relative rounded-lg overflow-hidden bg-[#1E1F26] card-small w-full card-border-style group cursor-pointer">
+                        <img th:src="@{/imagenes/banner mujeres.png}" onerror="this.onerror=null;this.src='https://placehold.co/250x200/171a21/FFFFFF?text=Mujer';"
+                             alt="Equipamiento para mujeres" 
+                             class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition duration-300"/>
+                        <div class="absolute inset-0 bg-black bg-opacity-30 flex flex-col justify-end p-4">
+                            <h3 class="text-xl font-bold text-white leading-tight mb-1">
+                                COLECCIÓN <span class="text-yellow-400">MUJERES</span>
+                            </h3>
+                            <a th:href="@{/mujer}" class="text-yellow-400 font-semibold hover:text-yellow-300 transition hover:underline text-sm">
+                                Ver Colección →
+                            </a>
+                        </div>
+                    </div>
+
+                                        <div class="relative rounded-lg overflow-hidden bg-[#1E1F26] card-small w-full card-border-style group cursor-pointer">
+                        <img th:src="@{/imagenes/BannerNiño.png}" onerror="this.onerror=null;this.src='https://placehold.co/250x200/171a21/FFFFFF?text=Niños';"
+                             alt="Equipamiento para niños" 
+                             class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition duration-300"/>
+                        <div class="absolute inset-0 bg-black bg-opacity-30 flex flex-col justify-end p-4">
+                            <h3 class="text-xl font-bold text-white leading-tight mb-1">
+                                COLECCIÓN <span class="text-yellow-400">NIÑOS</span>
+                            </h3>
+                            <a th:href="@{/niño}" class="text-yellow-400 font-semibold hover:text-yellow-300 transition hover:underline text-sm">
+                                Ver Colección →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+      <main class="max-w-7xl mx-auto p-6 space-y-12">
+
+   <section class="max-w-7xl mx-auto mt-6">
+  <h2 class="text-center text-white font-bold text-xl mb-6">Comprar por marcas</h2>
+
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6 justify-items-center">
+        <div class="marca-card bg-[#1E1F26] border border-gray-700 rounded-lg w-40 h-40 overflow-hidden cursor-pointer select-none">
+      <img th:src="@{/imagenes/tienda/agv.png}" class="w-full h-full object-cover" alt="Logo de la marca AGV">
+    </div>
+    <div class="marca-card bg-[#1E1F26] border border-gray-700 rounded-lg w-40 h-40 overflow-hidden cursor-pointer select-none">
+      <img th:src="@{/imagenes/tienda/schuberth.png}" class="w-full h-full object-cover" alt="Logo de la marca Schuberth">
+    </div>
+    <div class="marca-card bg-[#1E1F26] border border-gray-700 rounded-lg w-40 h-40 overflow-hidden cursor-pointer select-none">
+      <img th:src="@{/imagenes/tienda/hjc.jpg}" class="w-full h-full object-cover" alt="Logo de la marca HJC">
+    </div>
+    <div class="marca-card bg-[#1E1F26] border border-gray-700 rounded-lg w-40 h-40 overflow-hidden cursor-pointer select-none">
+      <img th:src="@{/imagenes/tienda/dainese1.png}" class="w-full h-full object-cover" alt="Logo de la marca Dainese">
+    </div>
+    <div class="marca-card bg-[#1E1F26] border border-gray-700 rounded-lg w-40 h-40 overflow-hidden cursor-pointer select-none">
+      <img th:src="@{/imagenes/tienda/revit.jpg}" class="w-full h-full object-cover" alt="Logo de la marca Rev'it">
+    </div>
+  </div>
+
+    <div class="flex justify-center mt-6">
+    <a th:href="@{/marcas}" class="bg-yellow-400 text-black px-6 py-2 rounded-md hover:bg-yellow-500 font-semibold">Ver más marcas</a>
+  </div>
+</section>
+
+  </main>
+
+     <footer th:fragment="footer" class="bg-black text-gray-300 px-6 py-8 text-center">
+    <p class="font-bold text-lg mb-2">RoarMot &copy; 2025</p>
+    <p class="text-sm">"Motero ayuda a motero" - Todos los derechos reservados</p>
+  </footer>
+
+  <script>
+    function scrollSection(button, direction){
+      const container = button.parentElement.querySelector('.overflow-x-auto, .no-scrollbar > div');
+      container.scrollBy({ left: direction * container.offsetWidth/5, behavior: 'smooth' });
+    }
+
+    // Script para marcar la tarjeta seleccionada
+    const marcaCards = document.querySelectorAll('.marca-card');
+    marcaCards.forEach(card => {
+      card.addEventListener('click', () => {
+        // Remover clases de selección de todas las tarjetas
+        marcaCards.forEach(c => c.classList.remove('bg-yellow-400', 'text-black'));
+        marcaCards.forEach(c => c.classList.add('bg-[#1E1F26]', 'text-white'));
+        // Añadir clases de selección a la tarjeta clicada
+        card.classList.remove('bg-[#1E1F26]', 'text-white');
+        card.classList.add('bg-yellow-400', 'text-black');
+      });
+    });
+  </script>
+
+</body>
+</html>

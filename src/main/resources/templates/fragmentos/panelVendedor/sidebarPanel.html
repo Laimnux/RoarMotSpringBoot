@@ -5,24 +5,36 @@
             <img th:src="@{/imagenes/tipografiaLogo.png}" alt="Nombre ROARMOT" class="h-10 object-contain ml-1 -translate-x-5 transform" />
         </div>
         <nav class="space-y-4">
-            <a th:href="@{/panel}" th:classappend="${activePage == 'inicio' ? 'bg-pink-600' : 'bg-gray-800 hover:bg-pink-600'}" class="flex items-center gap-3 px-4 py-2 rounded transition">
+            <a th:href="@{/panel}" th:classappend="${activePage == 'panel' ? 'bg-pink-600' : 'bg-gray-800 hover:bg-pink-600'}" class="flex items-center gap-3 px-4 py-2 rounded transition">
                 <i data-lucide="home" class="w-5 h-5"></i><span>Inicio</span>
             </a>
             <a th:href="@{/panel/addProduct}" th:classappend="${activePage == 'addProduct' ? 'bg-pink-600' : 'bg-gray-800 hover:bg-pink-600'}" class="flex items-center gap-3 px-4 py-2 rounded transition">
                 <i data-lucide="plus-circle" class="w-5 h-5"></i><span>Agregar producto</span>
             </a>
-            <a th:href="@{/panel/editProduct}" th:classappend="${activePage == 'editarProduct' ? 'bg-pink-600' : 'bg-gray-800 hover:bg-pink-600'}" class="flex items-center gap-3 px-4 py-2 rounded transition">
+            <a th:href="@{/panel/vendedor}" th:classappend="${activePage == 'editProduct' ? 'bg-pink-600' : 'bg-gray-800 hover:bg-pink-600'}" class="flex items-center gap-3 px-4 py-2 rounded transition">
                 <i data-lucide="edit" class="w-5 h-5"></i><span>Editar producto</span>
             </a>
-            <a th:href="@{/seller-dashboard/orders}" th:classappend="${activePage == 'orders' ? 'bg-pink-600' : 'bg-gray-800 hover:bg-pink-600'}" class="flex items-center gap-3 px-4 py-2 rounded transition">
-                <i data-lucide="package" class="w-5 h-5"></i><span>Pedidos</span>
+            <a th:href="@{/panel/addPromociones}" th:classappend="${activePage == 'orders' ? 'bg-pink-600' : 'bg-gray-800 hover:bg-pink-600'}" class="flex items-center gap-3 px-4 py-2 rounded transition">
+                <i data-lucide="package" class="w-5 h-5"></i><span>Promociones</span>
             </a>
-            <a th:href="@{/dashBoardVendedor}" th:classappend="${activePage == 'perfil' ? 'bg-pink-600' : 'bg-gray-800 hover:bg-pink-600'}" class="flex items-center gap-3 px-4 py-2 rounded transition">
+            <a th:href="@{/dashboard}" th:classappend="${activePage == 'perfil' ? 'bg-pink-600' : 'bg-gray-800 hover:bg-pink-600'}" class="flex items-center gap-3 px-4 py-2 rounded transition">
                 <i data-lucide="user" class="w-5 h-5"></i><span>Perfil</span>
             </a>
-            <a th:href="@{/logout}" class="flex items-center gap-3 px-4 py-2 bg-red-600 rounded hover:bg-red-700 transition mt-10">
-                <i data-lucide="log-out" class="w-5 h-5"></i><span>Cerrar sesión</span>
-            </a>
+            
+            <form th:action="@{/logout}" method="post">
+                <!-- 1. El campo oculto con el token CSRF es obligatorio -->
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                
+                <!-- 2. Usamos el botón como si fuera tu enlace, heredando los estilos Tailwind -->
+                <button type="submit" 
+                    class="flex items-center gap-3 px-4 py-2 bg-red-600 rounded hover:bg-red-700 transition mt-10"
+                    aria-label="Cerrar sesión">
+                    
+                    <!-- Tu ícono original -->
+                    <i data-lucide="log-out" class="w-5 h-5"></i>
+                    <span>Cerrar sesión</span>
+                </button>
+            </form>
         </nav>
     </div>
 </th:block>

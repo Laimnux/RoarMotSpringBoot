@@ -7,18 +7,50 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
      <!-- Enlace a Font Awesome para los iconos -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1yO0C/JtqFjF+pXg4Fk+G9rCgL7A1rD1+tQG+tQG+tQG+tQG+tQG+tQG+tQG+tQG+tQG+tQG+tQG+tQG+tQG+tQG+tQG+tQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- CÓDIGO CORREGIDO (QUITAR INTEGRITY) -->
+    <link rel="stylesheet" 
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+        crossorigin="anonymous" 
+        referrerpolicy="no-referrer" />
+
+    <!-- 🔑 AÑADIDO: ETIQUETAS META DE SPRING SECURITY CSRF 🔑 -->
+    <!-- Esto inyecta el token, el nombre de la cabecera, y el nombre del parámetro en el DOM. -->
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <meta name="_csrf_parameterName" th:content="${_csrf.parameterName}"/>
+
+    
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        /* Estilos de color solicitados para el fragmento */
+        .text-custom-green { color: #00DB9D; }
+        .bg-custom-light-green { background-color: #CDFFEA; }
+        .border-custom-medium-green { border-color: #99E9C3; }
+        .focus-ring-custom-green:focus {
+            --tw-ring-color: #00DB9D;
+        }
+        .btn-submit {
+            background-color: #00DB9D;
+            transition: all 0.2s;
+        }
+        .btn-submit:hover {
+            background-color: #00B380;
         }
     </style>
 </head>
 <body class="bg-gray-200 flex font-sans min-h-screen text-sm">
 
+    <!-- BARRA LATERAL (SIDEBAR) -->
     <aside class="w-72 bg-gray-900 text-white p-6 flex flex-col">
+        <!-- Reemplazo del sidebar: Usamos el th:replace para incluir el fragmento del menú -->
+        <!-- NOTA: Debes pasar 'activePage' en el modelo para que se resalte el ítem correcto -->
         <div th:replace="~{fragmentos/panelVendedor/sidebarPanel :: sidebar}">
-            </div>
+            <!-- Contenido de fallback si no se encuentra el fragmento -->
+        </div>
     </aside>
 
     <main class="flex-1 p-10 overflow-auto relative">
@@ -26,13 +58,56 @@
             Bienvenido, <span class="font-semibold text-pink-600" th:text="${nombreUsuario} ?: 'Usuario'">Usuario</span>
         </div>
 
-        <div th:insert="${contentFragment} :: content"></div>
+        <!-- INSERCIÓN DINÁMICA DEL CONTENIDO -->
+        <!-- El controlador define ${contentFragment} (ej: fragmentos/panelVendedor/editProduct) -->
+        <!-- Y se inserta el fragmento 'content' de ese archivo. -->
+        <div th:insert="~{${contentFragment} :: content}">
+            <!-- Contenido de fallback si contentFragment es nulo o el archivo no existe -->
+            <h1 class="text-xl font-bold text-gray-700">Contenido Principal del Panel</h1>
+            <p class="text-gray-500">Seleccione una opción del menú lateral.</p>
+        </div>
     </main>
 
     <script>
         // Inicializa los íconos de Lucide
         lucide.createIcons();
     </script>
+
+    <script>
+        // para la tarjeta Reporte Estadísticos
+        function descargarReporte(tipo) {
+        console.log('🟦 Botón clickeado, tipo:', tipo);
+        
+        let url = '';
+        
+        switch(tipo) {
+            case 'marca':
+                url = '/api/reportes/productos-por-marca';
+                break;
+            case 'talla':
+                url = '/api/reportes/productos-por-talla';
+                break;
+            case 'subcategoria':
+                url = '/api/reportes/productos-por-subcategoria';
+                break;
+            default:
+                console.error('❌ Tipo desconocido:', tipo);
+                return;
+        }
+        
+        console.log('🔗 URL generada:', url);
+        
+        // Verificar que la URL es válida
+        if (url && url.startsWith('/api/reportes/')) {
+            console.log('📥 Abriendo URL en nueva pestaña...');
+            window.open(url, '_blank');
+        } else {
+            console.error('❌ URL inválida:', url);
+            alert('Error: No se pudo generar la URL para el reporte');
+        }
+    }
+    </script>
+    
 </body>
 </html>
 
